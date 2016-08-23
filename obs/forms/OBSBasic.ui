@@ -805,7 +805,7 @@
      <x>0</x>
      <y>0</y>
      <width>1110</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -913,12 +913,19 @@
     <addaction name="toggleSceneTransitions"/>
     <addaction name="toggleStatusBar"/>
    </widget>
+   <widget class="QMenu" name="menuBasic_MainMenu_Upload">
+    <property name="title">
+     <string>Basic.MainMenu.Upload</string>
+    </property>
+    <addaction name="wjActionUploadSelect"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menuBasic_MainMenu_Edit"/>
    <addaction name="viewMenu"/>
    <addaction name="profileMenu"/>
    <addaction name="sceneCollectionMenu"/>
    <addaction name="menuBasic_MainMenu_Help"/>
+   <addaction name="menuBasic_MainMenu_Upload"/>
   </widget>
   <widget class="OBSBasicStatusBar" name="statusbar"/>
   <action name="actionAddScene">
@@ -1317,6 +1324,11 @@
    </property>
    <property name="text">
     <string>Basic.MainMenu.Edit.LockPreview</string>
+   </property>
+  </action>
+  <action name="wjActionUploadSelect">
+   <property name="text">
+    <string>Basic.MainMenu.Upload.Select</string>
    </property>
   </action>
  </widget>

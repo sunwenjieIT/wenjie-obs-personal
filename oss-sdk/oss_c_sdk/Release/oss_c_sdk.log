@@ -1,0 +1,19 @@
+﻿  aos_buf.c
+  aos_fstack.c
+  aos_http_io.c
+  aos_log.c
+  aos_status.c
+  aos_string.c
+  aos_transport.c
+  aos_util.c
+  oss_auth.c
+  oss_bucket.c
+  oss_define.c
+  oss_multipart.c
+  oss_object.c
+  oss_util.c
+  oss_xml.c
+libaprutil-1.lib(libaprutil-1.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR 已在 libapr-1.lib(libapr-1.dll) 中定义；已忽略第二个定义
+curl.lib(libcurl.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR 已在 libapr-1.lib(libapr-1.dll) 中定义；已忽略第二个定义
+mxml1.lib(MXML1.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR 已在 libapr-1.lib(libapr-1.dll) 中定义；已忽略第二个定义
+  oss_c_sdk.vcxproj -> F:\data\JavaSoft\Source\Repos\aliyun_oss_c_sdk_v3.0.0\Release\oss_c_sdk.lib

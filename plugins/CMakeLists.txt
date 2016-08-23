@@ -11,6 +11,7 @@ if(WIN32)
 	add_subdirectory(win-mf)
 	add_subdirectory(obs-qsv11)
 	add_subdirectory(vlc-video)
+	
 elseif(APPLE)
 	add_subdirectory(coreaudio-encoder)
 	add_subdirectory(mac-avcapture)

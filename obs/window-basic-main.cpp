@@ -25,6 +25,8 @@
 #include <QFileDialog>
 #include <QDesktopWidget>
 
+#include "uploadfiledialog.hpp"
+
 #include <util/dstr.h>
 #include <util/util.hpp>
 #include <util/platform.h>
@@ -56,6 +58,8 @@
 
 #include <QScreen>
 #include <QWindow>
+
+#include "oss_sample_util.h"
 
 using namespace std;
 
@@ -3424,6 +3428,19 @@ void OBSBasic::on_actionViewCurrentLog_triggered()
 void OBSBasic::on_actionCheckForUpdates_triggered()
 {
 	CheckForUpdates();
+}
+
+//ÉÏ´«
+void OBSBasic::on_wjActionUploadSelect_triggered()
+{
+	//QMessageBox::information(NULL, "title", "before start recording", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	UploadFileDialog uploadFileDialog;
+
+
+
+	//uploadFileDialog.easyUpload();
+	uploadFileDialog.exec();
+
 }
 
 void OBSBasic::logUploadFinished(const QString &text, const QString &error)

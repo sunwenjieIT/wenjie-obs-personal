@@ -49,6 +49,8 @@
 #include <signal.h>
 #endif
 
+#undef NOUSER
+
 using namespace std;
 
 static log_handler_t def_log_handler;

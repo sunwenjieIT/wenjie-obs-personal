@@ -33,6 +33,8 @@
 #include <util/threading.h>
 #include <util/util.hpp>
 
+#include <uploadfiledialog.hpp>
+
 #include <QPointer>
 
 class QListWidgetItem;
@@ -428,6 +430,9 @@ private slots:
 	void on_actionViewCurrentLog_triggered();
 	void on_actionCheckForUpdates_triggered();
 
+	//ÉÏ´«
+	void on_wjActionUploadSelect_triggered();
+
 	void on_actionEditTransform_triggered();
 	void on_actionResetTransform_triggered();
 	void on_actionRotate90CW_triggered();
@@ -498,6 +503,8 @@ private slots:
 	void on_transitionProps_clicked();
 
 	void on_modeSwitch_clicked();
+
+	
 
 	void logUploadFinished(const QString &text, const QString &error);
 
