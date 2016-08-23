@@ -28,23 +28,21 @@
 
 struct thread_data
 {
-	oss_upload_file_t *upload_file;
+	oss_upload_file_t *upload_file; //上传文件
 	oss_request_options_t *options;
 	aos_table_t *resp_headers;
-	aos_string_t upload_id;
+	aos_string_t upload_id;//上传id
 	aos_string_t bucket;
 	aos_string_t object;
-	int threadNum;
-	int start;
-	int end;
-	int startPart;
-	int endPart;
-	QString successKey;
-	QString partListKey;
-	QList<QVariant> uploadedPartList;
-	//QStringList uploadedPartList;
-	//QStringList *uploadedPartList;
-	QSettings *iniSetting;
+	int threadNum;//线程id
+	int start;	//起始偏移量
+	int end;	//终点偏移量								
+	int startPart;	//起始分块序号
+	int endPart;	//终点分块序号
+	QString successKey;	//ini key	->	true/false 代表该线程是否完成所有工作量
+	QString partListKey;//ini key	->	已上传分块集合
+	QList<QVariant> uploadedPartList;	//已上传分块集合
+
 };
 
 extern void append_object_sample();
@@ -218,8 +216,6 @@ void* say_hello(void* args)
 	aos_string_t bucket;
 	aos_string_t object;
 	QList<QVariant> list;
-	//QStringList *list;
-	//QString qfilePath;
 
 	struct thread_data *my_data;
 	my_data = (struct thread_data *)args;
@@ -231,13 +227,9 @@ void* say_hello(void* args)
 	upload_file = my_data->upload_file;
 	list = my_data->uploadedPartList;
 	thread_num = my_data->threadNum;
-
-	QSettings *threadSetting;
 	
 	QSettings *testSetting;
 	testSetting = new QSettings("D:/test4.ini", QSettings::IniFormat);
-
-
 
 	int po = my_data->start;
 	int partSize = 1024 * 1024 * 5;
@@ -249,6 +241,8 @@ void* say_hello(void* args)
 	blog(LOG_INFO, "thread %d start upload %s", thread_num, getChar(my_data->successKey));
 	int cout = 0;
 	int failCout = 0;
+
+	blog(LOG_INFO, "thread %d startpart: %d endpart: %d  ", my_data->threadNum, my_data->startPart, my_data->endPart);
 	for (int n = my_data->startPart; n <= my_data->endPart; n++)
 	{
 		//判断是否需要上传
@@ -272,15 +266,15 @@ void* say_hello(void* args)
 				if (cout % 3 == 0)
 				{
 					testSetting->setValue(my_data->partListKey, list);
-					blog(LOG_INFO, "upload ini file update from thread %s", my_data->threadNum);
+					blog(LOG_INFO, "upload ini file update from thread %d", my_data->threadNum);
 				}
 				//po = last;
 			}
 			else
 			{
 				if (++failCout < 4) {
-					n--;
 					blog(LOG_INFO, "retry thread %d upload part %d , error_code:%s error_msg:%s \n", my_data->threadNum, n, s->error_code, s->error_msg);
+					n--;
 					continue;
 				}
 				testSetting->setValue(my_data->successKey, false);
@@ -310,7 +304,7 @@ void* say_hello(void* args)
 	free(&object);
 	free(my_data);
 
-	delete threadSetting;
+	//delete threadSetting;
 	delete testSetting;
 	pthread_exit(NULL);
 	/************************************************************************/
@@ -337,13 +331,17 @@ void UploadFileDialog::on_pushButton_clicked()
 	//获取文件大小
 	total_size = get_file_size(file_path_char);
 	if (total_size == -1){
-		blog(LOG_INFO, "文件不存在");
+		blog(LOG_INFO, "file not exist");
 		return;
 	}
 	if (NULL != uploadIni)
 		delete uploadIni;
 	uploadIni = new QSettings("D:/test4.ini", QSettings::IniFormat);
 	
+	if (aos_http_io_initialize(NULL, 0) != AOSE_OK) {
+		exit(1);
+	}
+
 	aos_pool_t *plist[NUM_THREADS];
 	oss_request_options_t *optionslist[NUM_THREADS];
 
@@ -368,8 +366,7 @@ void UploadFileDialog::on_pushButton_clicked()
 	pthread_t threads[NUM_THREADS];		//工作线程
 	struct thread_data td[NUM_THREADS];	//线程参数结构体
 	int threads_num;	//线程数
-	//isResumeUpload = uploadIni->contains(file_path);//是否断点续传 第一次判断 绝对路径
-	isResumeUpload = uploadIni->contains(file_path) && total_size == uploadIni->value(file_path + "/total_size").toLongLong();
+	isResumeUpload = uploadIni->contains(file_path) && total_size == uploadIni->value(file_path + "/total_size").toLongLong() ? !uploadIni->value(file_path + "/is_finish").toBool() : false;
 	if (isResumeUpload)
 	{
 		//if (total_size == uploadIni->value(file_path + "/total_size").toLongLong())	//第二次判断 文件大小
@@ -409,57 +406,8 @@ void UploadFileDialog::on_pushButton_clicked()
 
 		}
 	}
-	//if (isResumeUpload)
-	//{
-	//	//线程数		已上传的分块信息
-	//	threads_num = uploadIni->beginReadArray(file_path + "/thread");
-	//	for (int i = 0; i < threads_num; ++i)
-	//	{
-	//		uploadIni->setArrayIndex(i);
-	//		td[i].uploadedPartList = uploadIni->value("partlist").toStringList();
-	//		//td[i].uploadedPartList = &uploadIni->value("partlist").toStringList();
-
-	//	}
-	//	uploadIni->endArray();
-	//	aos_str_set(&upload_id, uploadId);
-	//}
-	//else
-	//{
-	//	total_part = (total_size + partSize - 1) / partSize; //分块 总块数
-	//	threads_num = total_part > 5 ? 5 : total_part;
-	//	e_thread_parts = total_part / threads_num; //除最后一个线程外每个线程的任务量
-	//	l_thread_parts = e_thread_parts + total_part % threads_num; //最后一个线程的任务量
-	//	for (int i = 0; i < threads_num; ++i)
-	//	{
-	//		QStringList list;
-	//		td[i].uploadedPartList = list;
-	//		//td[i].uploadedPartList = new QStringList();
-
-	//	}
-	//}
-	if (aos_http_io_initialize(NULL, 0) != AOSE_OK) {
-		exit(1);
-	}
-	
-	
-	
-
 	aos_str_set(&bucket, "wenjie-backet");
-	
 	aos_str_set(&object, file_name_char);
-
-	//aos_str_set(&object, getChar(file_name));//可行
-	//aos_str_set(&object, file_name.toUtf8().data());//报错
-	//aos_str_set(&object, "thread10.mp4");
-	//char UPLOAD_FILE[] = "F:/download_all/Chrom_download/ActivePerl_5.16.2.3010812913.msi";
-	
-	//char UPLOAD_FILE[] = file_path.toUtf8().data();
-	//char UPLOAD_FILE[] = "F:/download_all/Chrom_download/one piece715-dmxz.zerodm.com.mp4";
-	//char UPLOAD_FILE[] = "F:/download_all/Chrom_download/ftpserver-1.0.6.zip";
-
-	//int64_t totalSize = get_file_size(UPLOAD_FILE);
-	
-
 	aos_pool_create(&p, NULL);
 	/* 创建并初始化options */
 	options = oss_request_options_create(p);
@@ -467,12 +415,7 @@ void UploadFileDialog::on_pushButton_clicked()
 	//init_options(options);
 	/* 初始化参数 */
 	headers = aos_table_make(p, 1);
-
-
-
-	
 	//aos_str_set(&upload_id, "76E295F65D274DDFA032881E03C89536");
-
 	if (!isResumeUpload) {
 		s = oss_init_multipart_upload(options, &bucket, &object,
 			&upload_id, headers, &resp_headers);
@@ -480,6 +423,7 @@ void UploadFileDialog::on_pushButton_clicked()
 		if (aos_status_is_ok(s)) {
 			if (!isResumeUpload) {
 				uploadIni->setValue(file_path, upload_id.data);
+				uploadIni->setValue(file_path + "/is_finish", false);
 				uploadIni->setValue(file_path + "/total_part", total_part);
 				uploadIni->setValue(file_path + "/total_size", total_size);
 				uploadIni->setValue(file_path + "/e_thread_parts", e_thread_parts);
@@ -493,11 +437,7 @@ void UploadFileDialog::on_pushButton_clicked()
 				upload_id.len, upload_id.data);
 		}
 	}
-
-	
-	
 	int rc;
-	//int i;
 
 	pthread_attr_t attr;
 	void *status;
@@ -510,31 +450,19 @@ void UploadFileDialog::on_pushButton_clicked()
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
-
-	//QList<QVariant> defaultList;
-	//defaultList.append(0);
-	//defaultList.append(10001);
 	blog(LOG_INFO, "start");
 	for (int i = 0; i < threads_num; ++i) {
 		td[i].threadNum = i + 1;
 		td[i].startPart = i * e_thread_parts + 1;
 		td[i].endPart = i + 1 == threads_num ? i * e_thread_parts + l_thread_parts : (i + 1) * e_thread_parts;
-		
-		
-
-		//QString temp1 = file_path + "/thread/";
-		//QString temp2 = QString::number(i+1) + "/partlist";
-		//QString temp = temp1 + temp2;
 		td[i].partListKey = file_path + "/thread/" + (QString::number(i+1) + "/partlist");
-		//td[i].arrayPath = file_path + "/thread/" + i + "/partlist";
-
-		//td[i].uploadedPartList = 
-		
 		/* 创建并初始化options */
-		aos_pool_create(&plist[i], NULL);
-		optionslist[i] = oss_request_options_create(plist[i]);
-		init_sample_request_options(optionslist[i], is_cname);
-		td[i].options = optionslist[i];
+		//aos_pool_create(&plist[i], NULL);
+		//optionslist[i] = oss_request_options_create(plist[i]);
+		//init_sample_request_options(optionslist[i], is_cname);
+		
+		td[i].options = options;
+		//td[i].options = optionslist[i];
 
 		//td[i].options = options;
 
@@ -543,21 +471,20 @@ void UploadFileDialog::on_pushButton_clicked()
 		td[i].object = object;
 
 		//upload_file = oss_create_upload_file(p);
-		upload_file = oss_create_upload_file(plist[i]);
-
-		aos_str_set(&upload_file->filename, file_path_char);
-		//aos_str_set(&upload_file->filename, UPLOAD_FILE);
+		upload_file = oss_create_upload_file(p);
+		//upload_file = oss_create_upload_file(plist[i]);
 		
-		td[i].iniSetting = uploadIni;
+		aos_str_set(&upload_file->filename, file_path_char);
 
 		td[i].successKey = file_path + "/thread/" + (QString::number(i + 1) + "/success");
-
 		td[i].upload_file = upload_file;
 		td[i].resp_headers = resp_headers;
 		td[i].start = (td[i].startPart - 1) * partSize;
 		td[i].end = i + 1 == threads_num ? total_size : td[i].start + partSize * e_thread_parts;
 
-		uploadIni->setValue(td[i].partListKey, defaultList);
+		if (!isResumeUpload) {
+			uploadIni->setValue(td[i].partListKey, defaultList);
+		}
 		uploadIni->setValue(td[i].successKey, true);
 		uploadIni->sync();
 		rc = pthread_create(&threads[i], NULL, say_hello, (void *)&td[i]);
@@ -597,8 +524,7 @@ void UploadFileDialog::on_pushButton_clicked()
 		uploadIni->setArrayIndex(i);
 		if (!uploadIni->value("success").toBool()) {
 			isFinishUpload = false;
-			QMessageBox::information(NULL, "upload message", "upload success", QMessageBox::Yes, QMessageBox::Yes);
-		}
+					}
 	}
 	uploadIni->endArray();
 
@@ -631,7 +557,8 @@ void UploadFileDialog::on_pushButton_clicked()
 		if (aos_status_is_ok(s)) {
 			blog(LOG_INFO, "Complete multipart upload from file succeeded, upload_id:%.*s\n",
 				upload_id.len, upload_id.data);
-			
+			uploadIni->setValue(file_path + "/is_finish", true);
+			uploadIni->sync();
 			QMessageBox::information(NULL, "upload message", "upload success", QMessageBox::Yes, QMessageBox::Yes);
 
 		}
@@ -641,15 +568,13 @@ void UploadFileDialog::on_pushButton_clicked()
 	}
 	else {
 		blog(LOG_INFO, "file multipart upload have part left");
+		QMessageBox::information(NULL, "upload message", "upload finish but have not done, please upload again", QMessageBox::Yes, QMessageBox::Yes);
 	}
 	//struct thread_data test;
 	aos_http_io_deinitialize();
 	blog(LOG_INFO, "finish upload\n");
 	//pthread_exit(NULL);
 }
-
-
-
 
 void UploadFileDialog::easyUpload()
 {
