@@ -1763,6 +1763,12 @@ static void upgrade_settings(void)
 
 int main(int argc, char *argv[])
 {
+	//_CrtSetBreakAlloc(421671);
+	/*_CrtSetBreakAlloc(1356670);
+	_CrtSetBreakAlloc(1356692);
+	_CrtSetBreakAlloc(1503168);
+	_CrtSetBreakAlloc(1503169);
+	_CrtSetBreakAlloc(1503277);*/
 #ifndef _WIN32
 	signal(SIGPIPE, SIG_IGN);
 #endif
@@ -1818,5 +1824,7 @@ int main(int argc, char *argv[])
 
 	blog(LOG_INFO, "Number of memory leaks: %ld", bnum_allocs());
 	base_set_log_handler(nullptr, nullptr);
+
+	_CrtDumpMemoryLeaks();
 	return ret;
 }

@@ -3437,7 +3437,7 @@ void OBSBasic::on_wjActionUploadSelect_triggered()
 	UploadFileDialog uploadFileDialog;
 
 
-
+	//uploadFileDialog.setAttribute(Qt::WA_DeleteOnClose);
 	//uploadFileDialog.easyUpload();
 	uploadFileDialog.exec();
 

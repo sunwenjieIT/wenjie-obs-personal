@@ -112,6 +112,20 @@ elseif(UNIX)
                 Qt5::X11Extras)
 endif()
 
+set(upload_SOURCES
+	uploadfiledialog.cpp
+	MyInt64Mq.cpp
+	update-progressbar.cpp
+	oss/upload_config.c
+)
+
+set(upload_HEADERS
+	uploadfiledialog.hpp
+	MyInt64Mq.h
+	update-progressbar.h
+	oss/upload_config.h
+)
+
 set(obs_SOURCES
 	${obs_PLATFORM_SOURCES}
 	obs-app.cpp
@@ -154,6 +168,7 @@ set(obs_SOURCES
 	audio-encoders.cpp
 	qt-wrappers.cpp
 	uploadfiledialog.cpp
+	
 #	oss_sample_util.c 
 #	oss_config.c
 #    oss_put_object_sample.c 
@@ -206,7 +221,7 @@ set(obs_HEADERS
 	remote-text.hpp
 	audio-encoders.hpp
 	qt-wrappers.hpp
-	uploadfiledialog.hpp
+	
 #	oss_config.h
 #	oss_sample_util.h
 	)
@@ -254,6 +269,8 @@ add_executable(obs WIN32
 	${obs_UI_HEADERS}
 	${SDK_SIMPLE_HEADERS}
 	${SDK_SIMPLE_SOURCES}
+	${upload_HEADERS}
+	${upload_SOURCES}
 #	${SRC_LIST}
 #	${OSS_SAMPLE_SOURCE_FILES}
 	${obs_QRC_SOURCES})
