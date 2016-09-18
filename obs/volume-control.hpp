@@ -76,7 +76,7 @@ signals:
 	void ConfigClicked();
 
 public:
-	VolControl(OBSSource source, bool showConfig = false);
+	VolControl(OBSSource source, bool showConfig = false, bool showDetail = true);
 	~VolControl();
 
 	inline obs_source_t *GetSource() const {return source;}

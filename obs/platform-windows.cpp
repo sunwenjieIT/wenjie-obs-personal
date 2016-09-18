@@ -83,8 +83,11 @@ string GetDefaultVideoSavePath()
 	wchar_t path_utf16[MAX_PATH];
 	char    path_utf8[MAX_PATH]  = {};
 
-	SHGetFolderPathW(NULL, CSIDL_MYVIDEO, NULL, SHGFP_TYPE_CURRENT,
-			path_utf16);
+	/*SHGetFolderPathW(NULL, CSIDL_MYVIDEO, NULL, SHGFP_TYPE_CURRENT,
+			path_utf16);*/
+	//修改默认保存路径 从视频目录下改到桌面目录
+	SHGetFolderPathW(NULL, CSIDL_DESKTOP, NULL, SHGFP_TYPE_CURRENT,
+		path_utf16);
 
 	os_wcs_to_utf8(path_utf16, wcslen(path_utf16), path_utf8, MAX_PATH);
 	return string(path_utf8);

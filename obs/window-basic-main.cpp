@@ -60,7 +60,7 @@
 #include <QWindow>
 
 #include "oss_sample_util.h"
-
+#include <QThread>
 using namespace std;
 
 namespace {
@@ -88,8 +88,13 @@ static T GetOBSRef(QListWidgetItem *item)
 template <typename T>
 static void SetOBSRef(QListWidgetItem *item, T &&val)
 {
-	item->setData(static_cast<int>(QtDataRole::OBSRef),
+	/*int trole = static_cast<int>(QtDataRole::OBSRef);
+	QVariant tval = QVariant::fromValue(val);
+	*/item->setData(static_cast<int>(QtDataRole::OBSRef),
 			QVariant::fromValue(val));
+	/*item->setData(trole, tval);
+	QVariant myval = item->data(256);
+	qDebug() << myval;*/
 }
 
 static void AddExtraModulePaths()
@@ -120,11 +125,108 @@ static void AddExtraModulePaths()
 
 static QList<QKeySequence> DeleteKeys;
 
+double OBSBasic::getDiskFreeSpace(QString driver) {
+	LPCWSTR lpcwstrDriver = (LPCWSTR)driver.utf16();
+
+	ULARGE_INTEGER liFreeBytesAvailable, liTotalBytes, liTotalFreeBytes;
+
+	if (!GetDiskFreeSpaceEx(lpcwstrDriver, &liFreeBytesAvailable, &liTotalBytes, &liTotalFreeBytes))
+	{
+		qDebug() << "ERROR: Call to GetDiskFreeSpaceEx() failed.";
+		return 0;
+	}
+	quint64 free_mb = (quint64)(liTotalFreeBytes.QuadPart / 1024 / 1024);//MB
+	//int temp = free_mb * 100 / 1024;
+	double free_gb = double(free_mb * 100 / 1024) / 100;
+	return free_gb;
+	//return (quint64)liTotalFreeBytes.QuadPart / 1024 / 1024 / 1024;
+}
+void OBSBasic::update_free_space() {
+	double freeSpace = getDiskFreeSpace(qst_path);
+	ui->label_2->setText(QString::number(freeSpace) + "G");
+}
 OBSBasic::OBSBasic(QWidget *parent)
 	: OBSMainWindow  (parent),
 	  ui             (new Ui::OBSBasic)
 {
+	
+	
+	//driversList = QDir::drives();
+	//qDebug() << driversList.at(0).absoluteDir().absolutePath();
+	
+	//const char *path = config_get_string(main->Config(), "SimpleOutput",
+	//	"FilePath");
+	qst_path = "C:/Users/wenjie/Videos/Captures";
+	qst_path = qst_path.left(qst_path.indexOf("/"));
+	double freeSpace = getDiskFreeSpace(qst_path);
+
+	
+
 	ui->setupUi(this);
+
+	ui->label_2->setText(QString::number(freeSpace) + "G");
+
+	ui->toggleStatusBar->setChecked(false);
+	ui->menubar->setVisible(false);
+	//this->mouseDoubleClickEvent()
+	/************************************************************************/
+	/* 改造代码开始                                                                     */
+	/************************************************************************/
+	//窗体
+	this->setWindowFlags(Qt::CustomizeWindowHint);
+	//this->setWindowFlags(Qt::FramelessWindowHint);
+	//this->setStyleSheet("background:green");
+	//播放按钮
+	ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+		//"QPushButton:hover{border-image: url(:/view/images/view/pause.png);}");
+	//ui->recordButton_view->setGeometry(20, 0, 20, 20);
+	
+	ui->settingsButton->setVisible(false);
+	ui->exitButton->setVisible(false);
+	ui->recordButton->setVisible(false);
+		//"QPushButton:pressed{border-image: url(:/qttest/stop);}");
+	//
+	//工具栏
+	ui->profileMenu->menuAction()->setVisible(false);
+	ui->sceneCollectionMenu->menuAction()->setVisible(false);
+	ui->streamButton->setVisible(false);
+	ui->modeSwitch->setVisible(false);
+	//预览区
+	ui->preview->setVisible(false);
+	//场景
+	ui->scenesFrame->setVisible(false);
+	ui->scenesLabel->setVisible(false);
+	//ui->scenes->setVisible(false);
+	//ui->scenesToolbar->setVisible(false);
+	//来源
+	ui->sourcesFrame->setVisible(false);
+	ui->sourcesLabel->setVisible(false);
+
+	ui->sources->setVisible(false);
+	ui->sourcesToolbar->setVisible(false);
+	//混音器
+	ui->mixerLabel->setVisible(false);
+	ui->advAudioProps->setVisible(false);
+	ui->scrollArea->setVisible(false);
+	//场景过渡
+	ui->sceneTransitionsLabel->setVisible(false);
+	//ui->transitions->setVisible(false);
+	//ui->horizontalLayout_4->setVisible(false);
+	/*ui->transitionAdd->setVisible(false);
+	ui->transitionProps->setVisible(false);
+	ui->transitionRemove->setVisible(false);*/
+
+	//ui->verticalSpacer->setVisible(false);
+	ui->transitionsContainer->setVisible(false);
+
+	//ui->transitionDuration->setVisible(false);
+	//ui->transitionDurationLabel->setVisible(false);
+	
+	//来源 初始化
+	
+	/************************************************************************/
+	/* 改造代码结束                                                                 */
+	/************************************************************************/
 	ui->previewDisabledLabel->setVisible(false);
 
 	copyActionsDynamicProperties();
@@ -244,6 +346,9 @@ OBSBasic::OBSBasic(QWidget *parent)
 	addNudge(Qt::Key_Down, SLOT(NudgeDown()));
 	addNudge(Qt::Key_Left, SLOT(NudgeLeft()));
 	addNudge(Qt::Key_Right, SLOT(NudgeRight()));
+	
+	
+	
 }
 
 static void SaveAudioDevice(const char *name, int channel, obs_data_t *parent,
@@ -444,7 +549,6 @@ void OBSBasic::CreateDefaultScene(bool firstStart)
 	CreateDefaultQuickTransitions();
 	ui->transitionDuration->setValue(300);
 	SetTransition(fadeTransition);
-
 	obs_scene_t  *scene  = obs_scene_create(Str("Basic.Scene"));
 
 	if (firstStart)
@@ -1029,7 +1133,7 @@ void OBSBasic::ResetOutputs()
 void OBSBasic::OBSInit()
 {
 	ProfileScope("OBSBasic::OBSInit");
-
+	
 	const char *sceneCollection = config_get_string(App()->GlobalConfig(),
 			"Basic", "SceneCollectionFile");
 	char savePath[512];
@@ -1188,6 +1292,80 @@ void OBSBasic::OBSInit()
 	}
 
 	ui->mainSplitter->setSizes(defSizes);
+	/************************************************************************/
+	/* 来源校验 开始                                                                 */
+	/************************************************************************/
+	ui->sources->selectAll();
+	QList<QListWidgetItem* > lists = ui->sources->selectedItems();
+
+	const char* monitor_capture_id = "monitor_capture";
+	const char* wasapi_input_capture_id = "wasapi_input_capture";
+	const char* wasapi_output_capture_id = "wasapi_output_capture";
+	if (lists.size() == 0) {
+		AddSourceBackground(monitor_capture_id);
+		AddSourceBackground(wasapi_input_capture_id);
+		AddSourceBackground(wasapi_output_capture_id);
+	}
+	else{
+		bool has_monitor_capture_source = false;
+		bool has_wasapi_input_capture = false;
+		bool has_wasapi_output_capture = false;
+		for (QListWidgetItem* myitem : lists) {
+			OBSSceneItem mySceneItem = GetSceneItem(myitem);
+			OBSSource mysource = obs_sceneitem_get_source(mySceneItem);
+			const char* source_id = obs_source_get_id(mysource);
+			if (strcmp("monitor_capture", source_id) == 0) {
+				has_monitor_capture_source = true;
+			}
+			else if (strcmp("wasapi_input_capture", source_id) == 0) {
+				has_wasapi_input_capture = true;
+			}
+			else if (strcmp("wasapi_output_capture", source_id) == 0) {
+				has_wasapi_output_capture = true;
+			}
+		}
+		if(!has_monitor_capture_source)
+			AddSourceBackground(monitor_capture_id);
+		if (!has_wasapi_input_capture)
+			AddSourceBackground(wasapi_input_capture_id);
+		if (!has_wasapi_output_capture)
+			AddSourceBackground(wasapi_output_capture_id);
+	}
+	/************************************************************************/
+	/* 来源校验 结束                                                                     */
+	/************************************************************************/
+	//YDB code
+	this->setMaximumHeight(40);
+	
+	ui->sources->selectAll();
+	QList<QListWidgetItem* > item_lists = ui->sources->selectedItems();
+	//OBSSource monitor_capture_source = NULL;
+	//OBSSource audio_input_source = NULL;
+	for (QListWidgetItem* myitem : item_lists) {
+		OBSSceneItem mySceneItem = GetSceneItem(myitem);
+		OBSSource mysource = obs_sceneitem_get_source(mySceneItem);
+		OBSData mysettings = obs_source_get_settings(mysource);
+		//wasapi_input_capture
+		if (strcmp("monitor_capture", obs_source_get_id(mysource)) == 0) {
+			monitor_capture_source = mysource;
+			qDebug() << "this is :" << obs_data_get_bool(obs_source_get_settings(mysource), "capture_cursor");
+			continue;
+		}
+		if (strcmp("wasapi_input_capture", obs_source_get_id(mysource)) == 0) {
+			wasapi_input_capture_source = mysource;
+			continue;
+		}
+		qDebug() << obs_source_get_id(mysource);
+	}
+	//ActivateAudioSource(wasapi_input_capture_source);
+
+	//mousePressEvent((0, 0));
+	//void OBSBasic::mousePressEvent(QMouseEvent *event)
+	//QMouseEvent* event =
+	//this->mousePressEvent()
+	
+	VolControl *vol = new VolControl(wasapi_input_capture_source, false, false);
+	ui->horizontalWidget->layout()->addWidget(vol);
 }
 
 void OBSBasic::InitHotkeys()
@@ -3153,7 +3331,12 @@ void OBSBasic::AddSource(const char *id)
 			CreatePropertiesWindow(sourceSelect.newSource);
 	}
 }
-
+void OBSBasic::AddSourceBackground(const char *id) {
+	if (id && *id) {
+		OBSBasicSourceSelect sourceSelect(this, id);
+		QMetaObject::invokeMethod(&sourceSelect, "on_buttonBox_accepted", Qt::AutoConnection);
+	}
+}
 QMenu *OBSBasic::CreateAddSourcePopupMenu()
 {
 	const char *type;
@@ -3824,28 +4007,29 @@ void OBSBasic::on_streamButton_clicked()
 {
 	if (outputHandler->StreamingActive()) {
 		bool confirm = config_get_bool(GetGlobalConfig(), "BasicWindow",
-				"WarnBeforeStoppingStream");
+			"WarnBeforeStoppingStream");
 
 		if (confirm) {
 			QMessageBox::StandardButton button =
 				QMessageBox::question(this,
-						QTStr("ConfirmStop.Title"),
-						QTStr("ConfirmStop.Text"));
+					QTStr("ConfirmStop.Title"),
+					QTStr("ConfirmStop.Text"));
 
 			if (button == QMessageBox::No)
 				return;
 		}
 
 		StopStreaming();
-	} else {
+	}
+	else {
 		bool confirm = config_get_bool(GetGlobalConfig(), "BasicWindow",
-				"WarnBeforeStartingStream");
+			"WarnBeforeStartingStream");
 
 		if (confirm) {
 			QMessageBox::StandardButton button =
 				QMessageBox::question(this,
-						QTStr("ConfirmStart.Title"),
-						QTStr("ConfirmStart.Text"));
+					QTStr("ConfirmStart.Title"),
+					QTStr("ConfirmStart.Text"));
 
 			if (button == QMessageBox::No)
 				return;
@@ -3855,12 +4039,124 @@ void OBSBasic::on_streamButton_clicked()
 	}
 }
 
+//
+//class YDBUpdateFreeSpace : public QThread {
+//	Q_OBJECT
+//public:
+//	YDBUpdateFreeSpace(QLabel *parent = 0) {
+//		this->parent = parent;
+//	}
+//	~YDBUpdateFreeSpace() {
+//	};
+//
+//	double getDiskFreeSpace(QString driver) {
+//		LPCWSTR lpcwstrDriver = (LPCWSTR)driver.utf16();
+//
+//		ULARGE_INTEGER liFreeBytesAvailable, liTotalBytes, liTotalFreeBytes;
+//
+//		if (!GetDiskFreeSpaceEx(lpcwstrDriver, &liFreeBytesAvailable, &liTotalBytes, &liTotalFreeBytes))
+//		{
+//			qDebug() << "ERROR: Call to GetDiskFreeSpaceEx() failed.";
+//			return 0;
+//		}
+//		quint64 free_mb = (quint64)(liTotalFreeBytes.QuadPart / 1024 / 1024);//MB
+//																			 //int temp = free_mb * 100 / 1024;
+//		double free_gb = double(free_mb * 100 / 1024) / 100;
+//		return free_gb;
+//		//return (quint64)liTotalFreeBytes.QuadPart / 1024 / 1024 / 1024;
+//	}
+//
+//	void run() {
+//		while (true)
+//		{
+//			Sleep(2000);
+//			double freeSpace = getDiskFreeSpace(qst_path);
+//			QMetaObject::invokeMethod(parent, "setText", Qt::AutoConnection, Q_ARG(QString, QString::number(freeSpace) + "M"));
+//			//ui->label_2->setText(QString::number(freeSpace) + "G");
+//		}
+//	};
+//private:
+//	QString qst_path;
+//	QLabel *parent;
+//};
+
+
+double getDiskFreeSpace(QString driver) {
+	LPCWSTR lpcwstrDriver = (LPCWSTR)driver.utf16();
+	
+	ULARGE_INTEGER liFreeBytesAvailable, liTotalBytes, liTotalFreeBytes;
+	
+	if (!GetDiskFreeSpaceEx(lpcwstrDriver, &liFreeBytesAvailable, &liTotalBytes, &liTotalFreeBytes))
+	{
+		return 0;
+	}
+	quint64 free_mb = (quint64)(liTotalFreeBytes.QuadPart / 1024 / 1024);//MB
+																			//int temp = free_mb * 100 / 1024;
+	double free_gb = double(free_mb * 100 / 1024) / 100;
+	return free_gb;
+	//return (quint64)liTotalFreeBytes.QuadPart / 1024 / 1024 / 1024;
+}
+
+
+struct MyStruct
+{
+	QLabel *a;
+	QString str;
+};
+bool is_update_free_space = true;
+void* update_free_space_method(void* args) {
+	MyStruct *a = (struct MyStruct*)args;
+	double free_gb;
+	while (is_update_free_space)
+	{
+		free_gb = getDiskFreeSpace("C:/");
+		//QString copy_str = a->str;
+		//LPCWSTR lpcwstrDriver = (LPCWSTR)copy_str.utf16();
+		////LPCWSTR lpcwstrDriver = (LPCWSTR)driver.utf16();
+
+		//ULARGE_INTEGER liFreeBytesAvailable, liTotalBytes, liTotalFreeBytes;
+
+		//if (!GetDiskFreeSpaceEx(lpcwstrDriver, &liFreeBytesAvailable, &liTotalBytes, &liTotalFreeBytes))
+		//{
+		//	return 0;
+		//}
+		//quint64 free_mb = (quint64)(liTotalFreeBytes.QuadPart / 1024 / 1024);//MB
+		//																	 //int temp = free_mb * 100 / 1024;
+		//double free_gb = double(free_mb * 100 / 1024) / 100;
+
+		//double dou = getDiskFreeSpace(a->str);
+		QString te = a->a->text();
+		QMetaObject::invokeMethod(a->a, "setText", Qt::QueuedConnection, Q_ARG(QString, QString::number(free_gb) + "M"));
+		blog(LOG_INFO, "update free done");
+		Sleep(2000);
+
+	}
+	blog(LOG_INFO, "finish upload free space");
+	return NULL;
+}
+
 void OBSBasic::on_recordButton_clicked()
 {
-	if (outputHandler->RecordingActive())
+	if (outputHandler->RecordingActive()) {
+
 		StopRecording();
-	else
+		is_update_free_space = false;
+		/*YDBUpdateFreeSpace* update_free_space = new YDBUpdateFreeSpace(ui->label_2);
+		update_free_space->start();*/
+		te->terminate();
+		te->wait();
+
+	}
+	else {
+		te = new MyThreadTest(ui->label_2, "C:/");
+		te->start();
+		//pthread_create(&update_thread, NULL, update_free_space_method, (void*)&td);
 		StartRecording();
+
+		/*YDBUpdateFreeSpace* update_free_space = new YDBUpdateFreeSpace(ui->label_2);
+		update_free_space->terminate();
+		update_free_space->wait();*/
+	}
 }
 
 void OBSBasic::on_settingsButton_clicked()
@@ -4402,7 +4698,7 @@ void OBSBasic::on_toggleSceneTransitions_toggled(bool visible)
 {
 	ui->sceneTransitionsLabel->setVisible(visible);
 	ui->transitionsContainer->setVisible(visible);
-
+	
 	config_set_bool(App()->GlobalConfig(), "BasicWindow",
 			"ShowTransitions", visible);
 }
@@ -4428,4 +4724,86 @@ void OBSBasic::on_actionLockPreview_triggered()
 {
 	ui->preview->ToggleLocked();
 	ui->actionLockPreview->setChecked(ui->preview->Locked());
+}
+
+/************************************************************************/
+/* 移动窗体                                                                     */
+/************************************************************************/
+void OBSBasic::mousePressEvent(QMouseEvent *event) {
+	last = event->globalPos();
+}
+void OBSBasic::mouseMoveEvent(QMouseEvent *event) {
+	int dx = event->globalX() - last.x();
+	int dy = event->globalY() - last.y();
+	
+	last = event->globalPos();
+	move(x() + dx, y() + dy);
+}
+void OBSBasic::mouseReleaseEvent(QMouseEvent *event) {
+	int dx = event->globalX() - last.x();
+	int dy = event->globalY() - last.y();
+
+	move(x() + dx, y() + dy);
+}
+/************************************************************************/
+/* 开始按钮                                                                     */
+/************************************************************************/
+void OBSBasic::on_recordButton_view_clicked() {
+	if (outputHandler->RecordingActive()) 
+		ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+	else
+		ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/stop.png);}");
+	ui->recordButton->clicked();
+	
+	/*if (outputHandler->RecordingActive())
+		St/opRecording();
+	else
+		StartRecording();*/
+}
+/************************************************************************/
+/* 移动窗体                                                                     */
+/************************************************************************/
+void OBSBasic::on_resumeButton_view_clicked() {
+	
+}
+void OBSBasic::on_exitButton_view_clicked() {
+	ui->exitButton->clicked();
+}
+void OBSBasic::on_settingsButton_view_clicked() {
+	
+
+	//QListWidgetItem* itema = ui->sources->currentItem();
+	ui->sources->selectAll();
+	QList<QListWidgetItem* > lists = ui->sources->selectedItems();
+	OBSSource monitor_capture_source = NULL;
+	for (QListWidgetItem* myitem : lists) {
+		OBSSceneItem mySceneItem = GetSceneItem(myitem);
+		OBSSource mysource = obs_sceneitem_get_source(mySceneItem);
+		OBSData mysettings = obs_source_get_settings(mysource);
+		if (strcmp("monitor_capture", obs_source_get_id(mysource)) == 0) {
+			monitor_capture_source = mysource;
+			qDebug() << "this is :" << obs_data_get_bool(obs_source_get_settings(mysource), "capture_cursor");
+			break;
+		}
+		qDebug() << obs_source_get_id(mysource);
+	}
+
+		//myitem->setText("abc");
+		//qDebug() << "data:" << myitem->data();
+	
+	//bool isChecked = obs_data_get_bool(settings, "capture_cursor");
+
+	//qDebug() << isChecked;
+//	ui->sources->
+	//blog(LOG_INFO, isChecked + "");
+	//YDBBasicSettings ydb_basic_settings(this);
+	//ydb_basic_settings.exec();
+
+	//ydb_settings->show();
+	//YDBSettings* ydb_settings_1 = new YDBSettings(this, monitor_capture_source);
+	//ydb_settings_1->exec();
+
+	YDBSettings ydb_settings(this, monitor_capture_source);
+	ydb_settings.exec();
+	//ui->settingsButton->clicked();
 }

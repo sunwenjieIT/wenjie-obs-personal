@@ -1312,7 +1312,7 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 			return 0;
 
 		prof.Stop();
-
+		
 		return program.exec();
 
 	} catch (const char *error) {
@@ -1819,12 +1819,12 @@ int main(int argc, char *argv[])
 
 	fstream logFile;
 
-	curl_global_init(CURL_GLOBAL_ALL);
+	curl_global_init(CURL_GLOBAL_ALL);//TODO
 	int ret = run_program(logFile, argc, argv);
 
 	blog(LOG_INFO, "Number of memory leaks: %ld", bnum_allocs());
 	base_set_log_handler(nullptr, nullptr);
 
-	_CrtDumpMemoryLeaks();
+	//_CrtDumpMemoryLeaks();
 	return ret;
 }

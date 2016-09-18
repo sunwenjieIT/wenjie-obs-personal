@@ -211,7 +211,7 @@ QWidget *OBSPropertiesView::NewWidget(obs_property_t *prop, QWidget *widget,
 		const char *signal)
 {
 	WidgetInfo *info = new WidgetInfo(this, prop, widget);
-	connect(widget, signal, info, SLOT(ControlChanged()));
+	connect(widget, signal, info, SLOT(ControlChanged()));//checkbox 点击信号 WidgetInfo ControlChanged槽
 	children.emplace_back(info);
 	return widget;
 }
@@ -403,7 +403,7 @@ static void AddComboItem(QComboBox *combo, obs_property_t *prop,
 	} else if (format == OBS_COMBO_FORMAT_STRING) {
 		var = QByteArray(obs_property_list_item_string(prop, idx));
 	}
-
+	QString test_tmp = QT_UTF8(name);
 	combo->addItem(QT_UTF8(name), var);
 
 	if (!obs_property_list_item_disabled(prop, idx))

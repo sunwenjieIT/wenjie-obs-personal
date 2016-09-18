@@ -26,7 +26,7 @@ class UploadFileDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit UploadFileDialog(QWidget *parent = 0);
+    explicit UploadFileDialog(QWidget *parent = 0, QString file_path = NULL);
     ~UploadFileDialog();
 
 signals:
@@ -45,14 +45,16 @@ public:
 	
 	QList<QVariant> defaultList;
 	//MyInt64Mq *mq = NULL;
+	QString file_path = NULL;
 	MyClass* task = NULL;
 	bool is_alive = false;
 
-public:
-	void easyUpload();
+//public:
+//	void easyUpload();
 
 private:
-    Ui::UploadFileDialog *ui;
+	Ui::UploadFileDialog *ui;
+
 };
 
 #endif // UPLOADFILEDIALOG_H

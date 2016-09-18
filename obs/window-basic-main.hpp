@@ -34,6 +34,10 @@
 #include <util/util.hpp>
 
 #include <uploadfiledialog.hpp>
+#include "window-ydb-settings.h"
+#include "window-ydb-basic-settings.h"
+#include "YDBRefreshSpace.h"
+
 
 #include <QPointer>
 
@@ -306,6 +310,8 @@ public slots:
 	void SaveProjectDeferred();
 	void SaveProject();
 
+	double getDiskFreeSpace(QString driver);
+
 private slots:
 	void AddSceneItem(OBSSceneItem item);
 	void RemoveSceneItem(OBSSceneItem item);
@@ -339,6 +345,9 @@ private slots:
 
 	void SetScaleFilter();
 
+	void update_free_space();
+	public:
+		QString qst_path;
 private:
 	/* OBS Callbacks */
 	static void SceneReordered(void *data, calldata_t *params);
@@ -356,6 +365,10 @@ private:
 	void ResizePreview(uint32_t cx, uint32_t cy);
 
 	void AddSource(const char *id);
+	/************************************************************************/
+	/* 后台添加默认的来源设置                                                                     */
+	/************************************************************************/
+	void AddSourceBackground(const char *id);
 	QMenu *CreateAddSourcePopupMenu();
 	void AddSourcePopupMenu(const QPoint &pos);
 	void copyActionsDynamicProperties();
@@ -416,7 +429,22 @@ public:
 protected:
 	virtual void closeEvent(QCloseEvent *event) override;
 	virtual void changeEvent(QEvent *event) override;
-
+	/************************************************************************/
+	/* 改造代码开始 移动窗体                                                                     */
+	/************************************************************************/
+	void mousePressEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
+private:
+	QPoint last;
+	pthread_t update_thread;
+	MyThreadTest* te;
+	OBSSource monitor_capture_source = NULL;
+	OBSSource wasapi_input_capture_source = NULL;
+	//YDBUpdateFreeSpace *update_free_space;
+	/************************************************************************/
+	/* 改造代码结束 移动窗体                                                                     */
+	/************************************************************************/
 private slots:
 	void on_actionShow_Recordings_triggered();
 	void on_actionRemux_triggered();
@@ -432,6 +460,14 @@ private slots:
 
 	//上传
 	void on_wjActionUploadSelect_triggered();
+	//更新时间
+	void update_timesession_view(QString str) {
+		ui->label->setText(str);
+	}
+	void on_recordButton_view_clicked();
+	void on_resumeButton_view_clicked();
+	void on_exitButton_view_clicked();
+	void on_settingsButton_view_clicked();
 
 	void on_actionEditTransform_triggered();
 	void on_actionResetTransform_triggered();
@@ -552,3 +588,5 @@ public:
 private:
 	std::unique_ptr<Ui::OBSBasic> ui;
 };
+
+

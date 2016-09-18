@@ -14,6 +14,11 @@
     <file>images/up.png</file>
     <file>images/obs.png</file>
   </qresource>
+  <qresource prefix="/view">
+    <file>images/view/stop.png</file>
+    <file>images/view/play.png</file>
+    <file>images/view/pause.png</file>
+  </qresource>
   <qresource prefix="/settings">
     <file>images/settings/advanced.png</file>
     <file>images/settings/network.png</file>

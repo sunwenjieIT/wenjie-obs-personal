@@ -85,7 +85,7 @@ private:
 	OBSBasic *main;
 
 	std::unique_ptr<Ui::OBSBasicSettings> ui;
-
+	
 	bool generalChanged = false;
 	bool stream1Changed = false;
 	bool outputsChanged = false;

@@ -103,13 +103,14 @@ void VolControl::EmitConfigClicked()
 	emit ConfigClicked();
 }
 
-VolControl::VolControl(OBSSource source_, bool showConfig)
+VolControl::VolControl(OBSSource source_, bool showConfig, bool showDetail)
 	: source        (source_),
 	  levelTotal    (0.0f),
 	  levelCount    (0.0f),
 	  obs_fader     (obs_fader_create(OBS_FADER_CUBIC)),
 	  obs_volmeter  (obs_volmeter_create(OBS_FADER_LOG))
 {
+
 	QHBoxLayout *volLayout  = new QHBoxLayout();
 	QVBoxLayout *mainLayout = new QVBoxLayout();
 	QHBoxLayout *textLayout = new QHBoxLayout();
@@ -189,6 +190,16 @@ VolControl::VolControl(OBSSource source_, bool showConfig)
 
 	/* Call volume changed once to init the slider position and label */
 	VolumeChanged();
+	
+	if (!showDetail) {
+		nameLabel->setVisible(false);
+		mute->setVisible(false);
+		slider->setVisible(false);
+		volLabel->setVisible(false);
+
+		//volMeter->setVisible(false);
+		volMeter->setMinimumWidth(100);
+	}
 }
 
 VolControl::~VolControl()

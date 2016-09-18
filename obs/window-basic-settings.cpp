@@ -257,6 +257,20 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 
 	ui->setupUi(this);
 
+	/************************************************************************/
+	/* UI界面改造开始                                                                  */
+	/************************************************************************/
+	//ui->settingsPages->setCurrentIndex(7);
+	//ui->listWidget->setVisible(false);
+
+	//ui->outputModeLabel->setVisible(false);
+	//ui->outputMode->setVisible(false);
+	//ui->line_2->setVisible(false);
+
+
+	/************************************************************************/
+	/* UI界面改造结束                                                                     */
+	/************************************************************************/
 	PopulateAACBitrates({ui->simpleOutputABitrate,
 			ui->advOutTrack1Bitrate, ui->advOutTrack2Bitrate,
 			ui->advOutTrack3Bitrate, ui->advOutTrack4Bitrate});
@@ -2431,7 +2445,7 @@ void OBSBasicSettings::SaveOutputSettings()
 {
 	config_set_string(main->Config(), "Output", "Mode",
 			OutputModeFromIdx(ui->outputMode->currentIndex()));
-
+	
 	QString encoder = ui->simpleOutStrEncoder->currentData().toString();
 	const char *presetType;
 
@@ -2633,7 +2647,7 @@ void OBSBasicSettings::SaveSettings()
 
 	if (videoChanged || advancedChanged)
 		main->ResetVideo();
-
+	
 	config_save_safe(main->Config(), "tmp", nullptr);
 	config_save_safe(GetGlobalConfig(), "tmp", nullptr);
 	main->SaveProject();

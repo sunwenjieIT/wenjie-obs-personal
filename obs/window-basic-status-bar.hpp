@@ -15,6 +15,8 @@ private:
 	QLabel *delayInfo;
 	QLabel *droppedFrames;
 	QLabel *sessionTime;
+	//¸ÄÔì
+	//QLabel* parentLabel;
 	QLabel *cpuUsage;
 	QLabel *kbps;
 
@@ -62,6 +64,7 @@ private slots:
 
 public:
 	OBSBasicStatusBar(QWidget *parent);
+	//OBSBasicStatusBar(QWidget *parent, QLabel* parentLabel);
 
 	void StreamDelayStarting(int sec);
 	void StreamDelayStopping(int sec);

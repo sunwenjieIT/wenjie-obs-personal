@@ -168,7 +168,13 @@ set(obs_SOURCES
 	audio-encoders.cpp
 	qt-wrappers.cpp
 	uploadfiledialog.cpp
-	
+	window-ydb-settings.cpp
+	window-ydb-filepath.cpp
+	showimg.cpp
+	YDBUtil.cpp
+	window-ydb-filename.cpp
+	YDBRefreshSpace.cpp
+	window-ydb-basic-settings.cpp
 #	oss_sample_util.c 
 #	oss_config.c
 #    oss_put_object_sample.c 
@@ -221,7 +227,13 @@ set(obs_HEADERS
 	remote-text.hpp
 	audio-encoders.hpp
 	qt-wrappers.hpp
-	
+	window-ydb-settings.h
+	window-ydb-filepath.h
+	showimg.h
+	YDBUtil.h
+	window-ydb-filename.h
+	YDBRefreshSpace.h
+	window-ydb-basic-settings.h
 #	oss_config.h
 #	oss_sample_util.h
 	)
@@ -241,7 +253,12 @@ set(obs_UI
 	forms/OBSBasicSourceSelect.ui
 	forms/OBSBasicInteraction.ui
 	forms/OBSRemux.ui
-	forms/uploadfiledialog.ui)
+	forms/uploadfiledialog.ui
+	forms/YDBSettings.ui
+	forms/showimg.ui
+	forms/YDBFilePath.ui
+	forms/YDBFileName.ui
+	forms/YDBBasicSettings.ui)
 
 set(obs_QRC
 	forms/obs.qrc)

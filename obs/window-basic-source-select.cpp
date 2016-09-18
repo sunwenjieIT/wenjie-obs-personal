@@ -210,8 +210,20 @@ OBSBasicSourceSelect::OBSBasicSourceSelect(OBSBasic *parent, const char *id_)
 		obs_source_release(source);
 		text = QString("%1 %2").arg(placeHolderText).arg(i++);
 	}
-
-	ui->sourceName->setText(text);
+	if (text.isEmpty()) {
+		if (strcmp(id, "monitor_capture") == 0) {
+			ui->sourceName->setText("default monitor capture");
+		}
+		else if (strcmp(id, "wasapi_input_capture") == 0) {
+			ui->sourceName->setText("default intput capture");
+		}
+		else if (strcmp(id, "wasapi_output_capture") == 0) {
+			ui->sourceName->setText("default output capture");
+		}
+	}
+	else {
+		ui->sourceName->setText(text);
+	}
 	ui->sourceName->setFocus();	//Fixes deselect of text.
 	ui->sourceName->selectAll();
 

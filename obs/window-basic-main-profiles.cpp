@@ -320,12 +320,11 @@ void OBSBasic::RefreshProfiles()
 		action->setChecked(strcmp(name, curName) == 0);
 
 		ui->profileMenu->addAction(action);
+		//action->setVisible(false);
 		count++;
 		return true;
 	};
-
 	EnumProfiles(addProfile);
-
 	ui->actionRemoveProfile->setEnabled(count > 1);
 }
 

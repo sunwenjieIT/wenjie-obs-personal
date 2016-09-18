@@ -5,6 +5,7 @@
 #include "window-basic-main-outputs.hpp"
 
 OBSBasicStatusBar::OBSBasicStatusBar(QWidget *parent)
+//OBSBasicStatusBar::OBSBasicStatusBar(QWidget *parent, QLabel* parentLabel)
 	: QStatusBar    (parent),
 	  delayInfo     (new QLabel),
 	  droppedFrames (new QLabel),
@@ -26,6 +27,10 @@ OBSBasicStatusBar::OBSBasicStatusBar(QWidget *parent)
 	sessionTime->setIndent(20);
 	cpuUsage->setIndent(20);
 	kbps->setIndent(10);
+
+	//改造代码
+	/*this->parentLabel = parentLabel;
+	this->parentLabel->setText(QString("00:00:00"));*/
 
 	addPermanentWidget(droppedFrames);
 	addPermanentWidget(sessionTime);
@@ -59,10 +64,12 @@ void OBSBasicStatusBar::Deactivate()
 	OBSBasic *main = qobject_cast<OBSBasic*>(parent());
 	if (!main)
 		return;
-
+	
 	if (!main->outputHandler->Active()) {
 		delete refreshTimer;
 		sessionTime->setText(QString("00:00:00"));
+		QMetaObject::invokeMethod(this->parentWidget(), "update_timesession_view", Qt::QueuedConnection, Q_ARG(QString, QString("00:00:00")));
+		//this->parentLabel->setText(QString("00:00:00"));
 		delayInfo->setText("");
 		droppedFrames->setText("");
 		kbps->setText("");
@@ -162,8 +169,14 @@ void OBSBasicStatusBar::UpdateSessionTime()
 	QString text;
 	text.sprintf("%02d:%02d:%02d", hours, minutes, seconds);
 	sessionTime->setText(text);
+	
 	sessionTime->setMinimumWidth(sessionTime->width());
+	
 
+	//改造
+	//this->parentLabel->setText(sessionTime->text());
+	
+	QMetaObject::invokeMethod(this->parentWidget(), "update_timesession_view", Qt::QueuedConnection, Q_ARG(QString, sessionTime->text()));
 	if (reconnectTimeout > 0) {
 		QString msg = QTStr("Basic.StatusBar.Reconnecting");
 		showMessage(msg.arg(QString::number(retries),

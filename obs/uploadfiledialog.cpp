@@ -23,14 +23,18 @@
 
 
 
-UploadFileDialog::UploadFileDialog(QWidget *parent) :
+UploadFileDialog::UploadFileDialog(QWidget *parent, QString file_path) :
     QDialog(parent),
     ui(new Ui::UploadFileDialog)
 {
     ui->setupUi(this);
 	defaultList.append(0);
 	defaultList.append(10001);
-	
+	if (NULL != file_path) {
+		ui->filePath->setText(file_path);
+		this->file_path = file_path;
+
+	}
 }
 
 
