@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="/res">
+    <file>images/YDB_delete.png</file>
+    <file>images/YDB_rename.png</file>
+    <file>images/YDB_upload.png</file>
     <file>images/mute.png</file>
     <file>images/unmute.png</file>
     <file>images/configuration21_16.png</file>
@@ -13,6 +16,7 @@
     <file>images/properties.png</file>
     <file>images/up.png</file>
     <file>images/obs.png</file>
+    <file>images/YDB_close.png</file>
   </qresource>
   <qresource prefix="/view">
     <file>images/view/stop.png</file>

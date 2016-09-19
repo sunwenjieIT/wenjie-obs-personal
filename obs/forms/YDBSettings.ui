@@ -167,11 +167,20 @@
            </item>
            <item row="2" column="8">
             <widget class="QPushButton" name="renameButton">
+             <property name="minimumSize">
+              <size>
+               <width>48</width>
+               <height>48</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
-               <width>25</width>
-               <height>25</height>
+               <width>48</width>
+               <height>48</height>
               </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border-image: url(:/res/images/YDB_rename.png);</string>
              </property>
              <property name="text">
               <string/>
@@ -180,11 +189,20 @@
            </item>
            <item row="2" column="7">
             <widget class="QPushButton" name="deleteButton">
+             <property name="minimumSize">
+              <size>
+               <width>48</width>
+               <height>48</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
-               <width>25</width>
-               <height>25</height>
+               <width>48</width>
+               <height>48</height>
               </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border-image: url(:/res/images/YDB_delete.png);</string>
              </property>
              <property name="text">
               <string/>
@@ -193,11 +211,20 @@
            </item>
            <item row="2" column="9">
             <widget class="QPushButton" name="uploadButton">
+             <property name="minimumSize">
+              <size>
+               <width>48</width>
+               <height>48</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
-               <width>25</width>
-               <height>25</height>
+               <width>48</width>
+               <height>48</height>
               </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border-image: url(:/res/images/YDB_upload.png);</string>
              </property>
              <property name="text">
               <string/>
@@ -260,6 +287,7 @@
  </widget>
  <resources>
   <include location="YDBSetting.qrc"/>
+  <include location="obs.qrc"/>
  </resources>
  <connections/>
 </ui>

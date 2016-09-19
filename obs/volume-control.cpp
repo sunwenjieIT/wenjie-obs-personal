@@ -194,11 +194,18 @@ VolControl::VolControl(OBSSource source_, bool showConfig, bool showDetail)
 	if (!showDetail) {
 		nameLabel->setVisible(false);
 		mute->setVisible(false);
+		mute->setChecked(false);
 		slider->setVisible(false);
+		
 		volLabel->setVisible(false);
-
+		
 		//volMeter->setVisible(false);
-		volMeter->setMinimumWidth(100);
+		volMeter->setMinimumWidth(70);
+		volMeter->setMaximumWidth(70);
+		QColor blackColor("black");
+		volMeter->setPeakHoldColor(blackColor);
+		//QColor color = volMeter->getBkColor();
+		//QColor testColor;
 	}
 }
 
@@ -258,14 +265,18 @@ void VolumeMeter::setPeakHoldColor(QColor c)
 VolumeMeter::VolumeMeter(QWidget *parent)
 			: QWidget(parent)
 {
+	//setMinimumSize(2, 3);
 	setMinimumSize(1, 3);
 
 	//Default meter color settings, they only show if there is no stylesheet, do not remove.
 	bkColor.setRgb(0xDD, 0xDD, 0xDD);
 	magColor.setRgb(0x20, 0x7D, 0x17);
 	peakColor.setRgb(0x3E, 0xF1, 0x2B);
-	peakHoldColor.setRgb(0x00, 0x00, 0x00);
+	//bkColor.setRgb(0xDD, 0xDD, 0xDD);
+	//magColor.setRgb(0x00, 0x00, 0x00);
+	//peakColor.setRgb(0x00, 0x00, 0x00);
 	
+	peakHoldColor.setRgb(0x00, 0x00, 0x00);
 	resetTimer = new QTimer(this);
 	connect(resetTimer, SIGNAL(timeout()), this, SLOT(resetState()));
 

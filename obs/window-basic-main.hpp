@@ -435,6 +435,8 @@ protected:
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
+	void showEvent(QShowEvent *event);
+	void paintEvent(QPaintEvent *event);
 private:
 	QPoint last;
 	pthread_t update_thread;
@@ -445,6 +447,7 @@ private:
 	/************************************************************************/
 	/* 改造代码结束 移动窗体                                                                     */
 	/************************************************************************/
+	
 private slots:
 	void on_actionShow_Recordings_triggered();
 	void on_actionRemux_triggered();
@@ -462,7 +465,7 @@ private slots:
 	void on_wjActionUploadSelect_triggered();
 	//更新时间
 	void update_timesession_view(QString str) {
-		ui->label->setText(str);
+		ui->timeSession->setText(str);
 	}
 	void on_recordButton_view_clicked();
 	void on_resumeButton_view_clicked();

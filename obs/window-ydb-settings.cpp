@@ -284,7 +284,8 @@ void YDBSettings::on_pathSettingsButton_clicked() {
 /* ¹ØÓÚ                                                                     */
 /************************************************************************/
 void YDBSettings::on_aboutButton_clicked() {
-
+	YDBUpdate update;
+	update.exec();
 }
 /************************************************************************/
 /* °ïÖú                                                                     */

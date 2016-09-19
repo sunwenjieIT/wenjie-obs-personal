@@ -12,6 +12,8 @@
 #include "qt-wrappers.hpp"
 #include "uploadfiledialog.hpp"
 
+#include "YDBUpdate.h"
+
 extern "C" {
 #include "libavformat/avformat.h"  
 #include "libswscale/swscale.h"  

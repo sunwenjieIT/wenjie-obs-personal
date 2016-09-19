@@ -174,6 +174,7 @@ set(obs_SOURCES
 	YDBUtil.cpp
 	window-ydb-filename.cpp
 	YDBRefreshSpace.cpp
+	YDBUpdate.cpp
 	window-ydb-basic-settings.cpp
 #	oss_sample_util.c 
 #	oss_config.c
@@ -233,6 +234,7 @@ set(obs_HEADERS
 	YDBUtil.h
 	window-ydb-filename.h
 	YDBRefreshSpace.h
+	YDBUpdate.h
 	window-ydb-basic-settings.h
 #	oss_config.h
 #	oss_sample_util.h
@@ -258,7 +260,8 @@ set(obs_UI
 	forms/showimg.ui
 	forms/YDBFilePath.ui
 	forms/YDBFileName.ui
-	forms/YDBBasicSettings.ui)
+	forms/YDBBasicSettings.ui
+	forms/YDBUpdate.ui)
 
 set(obs_QRC
 	forms/obs.qrc)
