@@ -223,7 +223,7 @@ OBSBasic::OBSBasic(QWidget *parent)
 
 	
 	//´°Ìå´óÐ¡
-	//this->setFixedSize(500, 25);
+	this->setFixedSize(500, 25);
 	
 	ui->horizontalWidget->setFixedSize(100, 25);
 
