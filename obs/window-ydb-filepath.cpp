@@ -38,9 +38,16 @@ void YDBFilePath::accept() {
 		QString new_file_path = ui->filePathEdit->text();
 		config_set_string(main->Config(), "SimpleOutput", "FilePath",
 			QT_TO_UTF8(new_file_path));
+		
+		//qst_path = "C:/Users/wenjie/Videos/Captures";
+
 		QMetaObject::invokeMethod(this->parentWidget(), "update_file_list", Qt::AutoConnection);
 		
 		update_config_local("SimpleOutput/FilePath", new_file_path);
+		
+		new_file_path = new_file_path.left(new_file_path.indexOf("/"));
+		main->updateDriver(new_file_path);
+		main->update_free_space();
 	}
 	QDialog::accept();
 }

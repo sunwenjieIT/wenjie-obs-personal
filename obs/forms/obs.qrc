@@ -33,4 +33,17 @@
     <file>images/settings/network-bluetooth.png</file>
     <file>images/settings/preferences-desktop-keyboard-shortcuts.png</file>
   </qresource>
+  <qresource prefix="/ydb">
+    <file>images/YDB-about.png</file>
+    <file>images/YDB-close.png</file>
+    <file>images/YDB-help.png</file>
+    <file>images/YDB-logo.png</file>
+    <file>images/YDB-play.png</file>
+    <file>images/YDB-save-settings.png</file>
+    <file>images/YDB-tape-set.png</file>
+    <file>images/YDB-video.png</file>
+    <file>images/YDB-delete.png</file>
+    <file>images/YDB-rename.png</file>
+    <file>images/YDB-upload.png</file>
+  </qresource>
 </RCC>

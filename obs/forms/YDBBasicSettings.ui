@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>录制设置</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="2">
@@ -220,7 +220,7 @@
         <item row="2" column="1">
          <widget class="QComboBox" name="simpleOutStrEncoder"/>
         </item>
-        <item row="4" column="0" colspan="2">
+        <item row="5" column="0" colspan="2">
          <widget class="QCheckBox" name="checkBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
@@ -245,6 +245,23 @@
         </item>
         <item row="3" column="1">
          <widget class="QComboBox" name="simpleOutPreset"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>比特率</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="simpleOutputVBitrate">
+          <property name="minimum">
+           <number>200</number>
+          </property>
+          <property name="maximum">
+           <number>1000000</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -302,25 +319,15 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="label_7">
           <property name="text">
            <string>CODEC</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="comboBox_7"/>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string>来源</string>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="1">
-         <widget class="QComboBox" name="auxAudioDevice1"/>
+         <widget class="QComboBox" name="comboBox_7"/>
         </item>
         <item row="1" column="1">
          <widget class="QComboBox" name="simpleOutputABitrate">
@@ -383,6 +390,16 @@
            </property>
           </item>
          </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>来源</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="auxAudioDevice1"/>
         </item>
        </layout>
       </item>

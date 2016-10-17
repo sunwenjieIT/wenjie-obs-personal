@@ -23,3 +23,4 @@ int64_t get_file_size(const char *file_path);
 OSS_CPP_END
 
 #endif
+

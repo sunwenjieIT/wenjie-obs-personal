@@ -39,7 +39,7 @@ OBSBasicStatusBar::OBSBasicStatusBar(QWidget *parent)
 	addPermanentWidget(kbps);
 }
 
-void OBSBasicStatusBar::Activate()
+void OBSBasicStatusBar::Activate(bool isReset)
 {
 	if (!active) {
 		refreshTimer = new QTimer(this);
@@ -49,12 +49,14 @@ void OBSBasicStatusBar::Activate()
 		int skipped = video_output_get_skipped_frames(obs_get_video());
 		int total   = video_output_get_total_frames(obs_get_video());
 
-		totalSeconds = 0;
+		totalSeconds = isReset ? 0 : old_totalSeconds;
+		//totalSeconds = 0;
 		lastSkippedFrameCount = 0;
 		startSkippedFrameCount = skipped;
 		startTotalFrameCount = total;
 
 		refreshTimer->start(1000);
+		
 		active = true;
 	}
 }
@@ -68,7 +70,17 @@ void OBSBasicStatusBar::Deactivate()
 	if (!main->outputHandler->Active()) {
 		delete refreshTimer;
 		sessionTime->setText(QString("00:00:00"));
-		QMetaObject::invokeMethod(this->parentWidget(), "update_timesession_view", Qt::QueuedConnection, Q_ARG(QString, QString("00:00:00")));
+
+		if (isPause) {
+			//暂停操作, 记录时间
+			old_totalSeconds = totalSeconds;
+		}
+		else {
+			//非暂停 时间清零
+			old_totalSeconds = 0;
+			//QMetaObject::invokeMethod(this->parentWidget(), "update_timesession_view", Qt::QueuedConnection, Q_ARG(QString, QString("00:00:00")));
+		}
+
 		//this->parentLabel->setText(QString("00:00:00"));
 		delayInfo->setText("");
 		droppedFrames->setText("");
@@ -176,7 +188,7 @@ void OBSBasicStatusBar::UpdateSessionTime()
 	//改造
 	//this->parentLabel->setText(sessionTime->text());
 	
-	QMetaObject::invokeMethod(this->parentWidget(), "update_timesession_view", Qt::QueuedConnection, Q_ARG(QString, sessionTime->text()));
+	//QMetaObject::invokeMethod(this->parentWidget(), "update_timesession_view", Qt::QueuedConnection, Q_ARG(QString, sessionTime->text()));
 	if (reconnectTimeout > 0) {
 		QString msg = QTStr("Basic.StatusBar.Reconnecting");
 		showMessage(msg.arg(QString::number(retries),
@@ -323,9 +335,10 @@ void OBSBasicStatusBar::StreamStarted(obs_output_t *output)
 	Activate();
 }
 
-void OBSBasicStatusBar::StreamStopped()
+void OBSBasicStatusBar::StreamStopped(bool isPause)
 {
 	if (streamOutput) {
+		this->isPause = isPause;
 		signal_handler_disconnect(
 				obs_output_get_signal_handler(streamOutput),
 				"reconnect", OBSOutputReconnect, this);
@@ -341,14 +354,18 @@ void OBSBasicStatusBar::StreamStopped()
 	}
 }
 
-void OBSBasicStatusBar::RecordingStarted(obs_output_t *output)
+void OBSBasicStatusBar::RecordingStarted(obs_output_t *output, bool isReset)
 {
+	//this->isPause = isPause;
+	//if (!isPause)
+	//	old_totalSeconds = 0;
 	recordOutput = output;
-	Activate();
+	Activate(isReset);
 }
 
-void OBSBasicStatusBar::RecordingStopped()
+void OBSBasicStatusBar::RecordingStopped(bool isPause)
 {
+	this->isPause = isPause;
 	recordOutput = nullptr;
 	Deactivate();
 }

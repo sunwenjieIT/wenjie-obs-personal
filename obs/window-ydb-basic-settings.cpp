@@ -11,7 +11,11 @@
 #include "QJsonArray"
 #include "QJsonDocument"
 
+#include "platform.hpp"
+//#include "window-basic-preview.cpp"
+//#include "window-basic-main.hpp"
 //#include "properties-view.cpp"
+
 using namespace std;
 QString qJsonObjectToQString(QJsonObject obj) {
 	return QString(QJsonDocument(obj).toJson());
@@ -88,7 +92,15 @@ YDBBasicSettings::YDBBasicSettings(QWidget *parent, OBSSource monitor_capture_so
 	main = qobject_cast<OBSBasic*>(parent);
 
 
-	
+	//connect(ui->simpleOutputVBitrate, SIGNAL()
+	//connect(ui->simpleOutputVBitrate, SIGNAL(valueChanged(int)), this, SLOT(on_simpleOutputVBitrate_changed(int)));
+
+	//视频比特率
+	int videoBitrate = config_get_uint(main->Config(), "SimpleOutput",
+		"VBitrate");
+	ui->simpleOutputVBitrate->setValue(videoBitrate);
+	old_simpleOutputVBitrate_value = videoBitrate;
+
 	//录制光标(全屏录制)
 	is_capture_cursor = obs_data_get_bool(monitor_capture_settings, "capture_cursor");
 	ui->checkBox->setChecked(is_capture_cursor);
@@ -207,6 +219,18 @@ YDBBasicSettings::YDBBasicSettings(QWidget *parent, OBSSource monitor_capture_so
 	if (idx != -1)
 		ui->displaySelect->setCurrentIndex(idx);
 
+	if (main->recording_status == main->Recording_status::Pausing) {
+		ui->sampleRate->setDisabled(true);
+		ui->displaySelect->setDisabled(true);
+		ui->simpleOutputABitrate->setDisabled(true);
+		ui->simpleOutStrEncoder->setDisabled(true);
+		ui->fpsCommon->setDisabled(true);
+		ui->simpleOutPreset->setDisabled(true);
+		ui->simpleOutRecFormat->setDisabled(true);
+		ui->auxAudioDevice1->setDisabled(true);
+		ui->simpleOutputVBitrate->setDisabled(true);
+
+	}
 	is_init_done = true;
 }
 void YDBBasicSettings::SimpleRecordingEncoderChanged() {
@@ -282,6 +306,9 @@ void YDBBasicSettings::on_buttonBox_clicked(QAbstractButton* button) {
 	QDialogButtonBox::ButtonRole val = ui->buttonBox->buttonRole(button);
 	
 	if (val == QDialogButtonBox::ResetRole) {
+		if (main->recording_status == OBSBasic::Pausing) {
+			return;
+		}
 		//ui->fpsCommon = 
 		ui->simpleOutRecFormat->setCurrentIndex(0);
 		ui->fpsCommon->setCurrentIndex(3);
@@ -290,11 +317,12 @@ void YDBBasicSettings::on_buttonBox_clicked(QAbstractButton* button) {
 		ui->auxAudioDevice1->setCurrentIndex(1);
 		ui->sampleRate->setCurrentIndex(0);
 		ui->checkBox->setChecked(true);
+		ui->simpleOutputVBitrate->setValue(500);
 	}
 }
 void YDBBasicSettings::accept() {
 	qDebug() << "accept!";
-	if (simpleOutRecFormat_changed || sampleRate_changed || fpsCommon_changed || simpleOutPreset_changed
+	if (simpleOutRecFormat_changed || sampleRate_changed || fpsCommon_changed || simpleOutPreset_changed || displaySelect_changed
 		|| simpleOutStrEncoder_changed || auxAudioDevice1_changed || simpleOutputABitrate_changed) {
 		isChanged = true;
 		wchar_t path_utf16[MAX_PATH];
@@ -361,24 +389,64 @@ void YDBBasicSettings::accept() {
 	if (fpsCommon_changed) {
 		SaveCombo(ui->fpsCommon, "Video", "FPSCommon");
 		update_config_local("Video/FPSCommon", ui->fpsCommon->currentText());
-		main->ResetVideo();
+		//main->ResetVideo();
 	}
 	//显示器鼠标捕获
 	if (captureCurosr_changed) {
 		qDebug() << "captureCurosr_changed save";
 		obs_data_set_bool(monitor_capture_settings, "capture_cursor", ui->checkBox->isChecked());
+
 		//obs_data_set_bool(obs_source_get_settings(monitor_capture_source), "capture_cursor", ui->checkBox->isChecked());
 	}
 	//显示器选择
 	if (displaySelect_changed) {
 		int index = ui->displaySelect->currentIndex();
 		obs_data_set_int(monitor_capture_settings, "monitor", index);
+
+		OBSSceneItem scene_item= main->GetCurrentSceneItem();
+
+	/*	obs_video_info ovi;
+		obs_get_video_info(&ovi);*/
+
+		
+
+		vector<MonitorInfo> monitors;
+		GetMonitors(monitors);
+		MonitorInfo default_info = monitors.at(0);
+		MonitorInfo monitor_info = monitors.at(index);
+		uint32_t cx = monitor_info.cx;
+		uint32_t cy = monitor_info.cy;
+
+		config_set_uint(main->Config(), "Video", "BaseCX", cx);
+		config_set_uint(main->Config(), "Video", "BaseCY", cy);
+		update_config_local("Video/BaseCX", QString::number(cx));
+		update_config_local("Video/BaseCY", QString::number(cy));
+
+		config_set_uint(main->Config(), "Video", "OutputCX", cx);
+		config_set_uint(main->Config(), "Video", "OutputCY", cy);
+		update_config_local("Video/OutputCX", QString::number(cx));
+		update_config_local("Video/OutputCY", QString::number(cy));
+
+		vec2 pos;
+		vec2_set(&pos, float(cx), float(cy));
+		//vec2_set(&pos, float(default_info.cx), float(default_info.cy));
+
+		obs_sceneitem_defer_update_begin(scene_item);
+		obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_STRETCH);
+		obs_sceneitem_set_bounds(scene_item, &pos);
+		obs_sceneitem_defer_update_end(scene_item);
+		//main->ResetVideo();
 	}
-	//来源
+	//来源	SaveSpinBox(ui->simpleOutputVBitrate, "SimpleOutput", "VBitrate");
 	if (auxAudioDevice1_changed) {
 		main->ResetAudioDevice(App()->InputAudioSource(), QT_TO_UTF8(GetComboData(ui->auxAudioDevice1)), Str("Basic.AuxDevice1"), 3);
 	}
+	if (simpleOutPreset_changed) {
+		config_set_int(main->Config(), "SimpleOutput", "VBitrate", ui->simpleOutputVBitrate->value());
+	}
 	//应用改动
+	if (fpsCommon_changed || displaySelect_changed)
+		main->ResetVideo();
 	if (captureCurosr_changed || displaySelect_changed) {
 		obs_source_update(monitor_capture_source, monitor_capture_settings);
 	}
@@ -387,6 +455,13 @@ void YDBBasicSettings::accept() {
 		main->ResetOutputs();
 	}
 	QDialog::accept();
+}
+
+void YDBBasicSettings::on_simpleOutputVBitrate_valueChanged(int value) {
+	if (is_init_done && value != old_simpleOutputVBitrate_value) {
+		sender()->setProperty("changed", QVariant(true));
+		simpleOutPreset_changed = true;
+	}
 }
 
 void YDBBasicSettings::on_simpleOutRecFormat_currentIndexChanged(int idx) {

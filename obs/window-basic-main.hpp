@@ -45,6 +45,25 @@ class QListWidgetItem;
 class VolControl;
 class QNetworkReply;
 
+//文件处理
+#include <QFile>
+#include <QList>
+
+//FFMPEG head file 
+extern "C" {
+#include <libavformat/avformat.h>
+#include "libavcodec/avcodec.h"
+#include "libavfilter/avfiltergraph.h"
+#include "libavfilter/buffersink.h"
+#include "libavfilter/buffersrc.h"
+#include "libavutil/avutil.h"
+#include "libavutil/opt.h"
+#include "libavutil/pixdesc.h"
+#include "libswresample\swresample.h"
+#include "libavutil\fifo.h"
+#include "libavutil/audio_fifo.h"
+}
+
 #include "ui_OBSBasic.h"
 
 #define DESKTOP_AUDIO_1 Str("DesktopAudioDevice1")
@@ -88,6 +107,9 @@ class OBSBasic : public OBSMainWindow {
 	friend class OBSBasicPreview;
 	friend class OBSBasicStatusBar;
 	friend class OBSBasicSourceSelect;
+	friend class YDBBasicSettings;
+	friend class SimpleOutput;
+	//friend class YDBFilePath;
 
 	enum class MoveDir {
 		Up,
@@ -100,6 +122,31 @@ private:
 	std::vector<VolControl*> volumes;
 
 	std::vector<OBSSignal> signalHandlers;
+
+	
+	//是否暂停的判断符
+	bool isPause = false;
+	bool isReset = false;
+	//合并视频
+	//AVFormatContext *in1_fmtctx = NULL, *in2_fmtctx = NULL, *out_fmtctx = NULL;
+	//AVStream *out_video_stream = NULL, *out_audio_stream = NULL;
+	//int video_stream_index = -1, audio_stream_index = -1;
+
+	//录制文件集合
+	QList<QString> file_list;
+	//当前录制的文件绝对路径
+	QString current_file_ap;
+	//当前录制的文件名
+	QString current_file_name;
+	//合并视频文件
+	void combineVideo(QString video1, QString video2);
+
+	enum Recording_status {
+		Waiting,
+		Pausing,
+		Recoding
+	};
+	Recording_status recording_status = Waiting;
 
 	bool loaded = false;
 	long disableSaving = 1;
@@ -345,9 +392,11 @@ private slots:
 
 	void SetScaleFilter();
 
-	void update_free_space();
 	public:
-		QString qst_path;
+		//更改保存路径时更新剩余空间		录制开始后剩余空间的实时更新放在一个线程中操作
+		void update_free_space();
+		QString driver = "C:/";
+		//QString qst_path;
 private:
 	/* OBS Callbacks */
 	static void SceneReordered(void *data, calldata_t *params);
@@ -443,11 +492,15 @@ private:
 	MyThreadTest* te;
 	OBSSource monitor_capture_source = NULL;
 	OBSSource wasapi_input_capture_source = NULL;
+	OBSSource scene_source = NULL;
 	//YDBUpdateFreeSpace *update_free_space;
 	/************************************************************************/
 	/* 改造代码结束 移动窗体                                                                     */
 	/************************************************************************/
-	
+	QPointer<QTimer> refreshTimer;
+	int totalSeconds = 0;
+	int old_totalSeconds = 0;
+
 private slots:
 	void on_actionShow_Recordings_triggered();
 	void on_actionRemux_triggered();
@@ -464,9 +517,13 @@ private slots:
 	//上传
 	void on_wjActionUploadSelect_triggered();
 	//更新时间
-	void update_timesession_view(QString str) {
+	/*void update_timesession_view(QString str) {
 		ui->timeSession->setText(str);
-	}
+	}*/
+	void update_timesession_view(); 
+	//{
+	//	//ui->timeSession->setText(str);
+	//}
 	void on_recordButton_view_clicked();
 	void on_resumeButton_view_clicked();
 	void on_exitButton_view_clicked();
@@ -587,6 +644,11 @@ public:
 
 	virtual int GetProfilePath(char *path, size_t size, const char *file)
 		const override;
+
+	void updateDriver(QString driver) {
+		//this->qst_path = driver;
+		this->driver = driver;
+	};
 
 private:
 	std::unique_ptr<Ui::OBSBasic> ui;

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" assignedExecutableTargets="true" buildAllGenerated="false">
+    <generated />
+  </component>
+  <component name="CMakeSettings" AUTO_RELOAD="false" GENERATION_PASS_SYSTEM_ENVIRONMENT="true">
+    <ADDITIONAL_GENERATION_ENVIRONMENT>
+      <envs />
+    </ADDITIONAL_GENERATION_ENVIRONMENT>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6fd8ac62-3eac-410f-ad56-d2e22c510003" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/forms/YDBSettings.ui" afterPath="$PROJECT_DIR$/obs/forms/YDBSettings.ui" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/forms/YDBUpdate.ui" afterPath="$PROJECT_DIR$/obs/forms/YDBUpdate.ui" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libobs/media-io/audio-io.c" afterPath="$PROJECT_DIR$/libobs/media-io/audio-io.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libobs/media-io/video-io.c" afterPath="$PROJECT_DIR$/libobs/media-io/video-io.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/CMakeLists.txt" afterPath="$PROJECT_DIR$/obs/CMakeLists.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/YDBUpdate.cpp" afterPath="$PROJECT_DIR$/obs/YDBUpdate.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/YDBUpdate.h" afterPath="$PROJECT_DIR$/obs/YDBUpdate.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/window-basic-main.cpp" afterPath="$PROJECT_DIR$/obs/window-basic-main.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/window-basic-main.hpp" afterPath="$PROJECT_DIR$/obs/window-basic-main.hpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/window-basic-preview.cpp" afterPath="$PROJECT_DIR$/obs/window-basic-preview.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/window-basic-status-bar.cpp" afterPath="$PROJECT_DIR$/obs/window-basic-status-bar.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/window-basic-status-bar.hpp" afterPath="$PROJECT_DIR$/obs/window-basic-status-bar.hpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/window-ydb-basic-settings.cpp" afterPath="$PROJECT_DIR$/obs/window-ydb-basic-settings.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/window-ydb-settings.cpp" afterPath="$PROJECT_DIR$/obs/window-ydb-settings.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obs/window-ydb-settings.h" afterPath="$PROJECT_DIR$/obs/window-ydb-settings.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/obs-ffmpeg/obs-ffmpeg-output.c" afterPath="$PROJECT_DIR$/plugins/obs-ffmpeg/obs-ffmpeg-output.c" />
+    </list>
+    <ignored path="wenjie-obs-personal.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="wenjie-obs-personal" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="obs-internal.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/libobs/obs-internal.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="4250">
+              <caret line="250" column="0" selection-start-line="250" selection-start-column="0" selection-end-line="250" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="window-ydb-basic-settings.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/obs/window-ydb-basic-settings.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="222">
+              <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="window-basic-main.hpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/obs/window-basic-main.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="471" column="16" selection-start-line="471" selection-start-column="16" selection-end-line="471" selection-end-column="16" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="window-basic-status-bar.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/obs/window-basic-status-bar.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="273">
+              <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+              <folding>
+                <marker date="1476008671419" expanded="true" signature="915:1001" placeholder="/.../" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="window-basic-main.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/obs/window-basic-main.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="3978" column="19" selection-start-line="3978" selection-start-column="19" selection-end-line="3978" selection-end-column="19" />
+              <folding>
+                <element signature="e#3005#3110#0" expanded="true" />
+                <element signature="e#3316#3387#0" expanded="true" />
+                <element signature="e#3411#3491#0" expanded="true" />
+                <element signature="e#11404#11447#0" expanded="true" />
+                <element signature="e#11525#11736#0" expanded="true" />
+                <element signature="e#43440#43496#0" expanded="true" />
+                <element signature="e#52146#52353#0" expanded="true" />
+                <element signature="e#62828#62926#0" expanded="true" />
+                <element signature="e#63462#63487#0" expanded="true" />
+                <element signature="e#75580#75779#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/obs/window-basic-status-bar.cpp" />
+        <option value="$PROJECT_DIR$/obs/window-basic-main.cpp" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" />
+  <component name="JsBuildToolPackageJson" detection-done="true" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1382" />
+    <option name="height" value="754" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wenjie-obs-personal" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wenjie-obs-personal" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wenjie-obs-personal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="settings.editor.selected.configurable" value="terminal" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6fd8ac62-3eac-410f-ad56-d2e22c510003" name="Default" comment="" />
+      <created>1474281663093</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1474281663093</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1382" height="754" extended-state="0" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329582" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/libobs/obs-internal.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4250">
+          <caret line="250" column="0" selection-start-line="250" selection-start-column="0" selection-end-line="250" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/obs/window-ydb-basic-settings.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/libobs/obs-internal.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/libobs/obs-internal.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4250">
+          <caret line="250" column="0" selection-start-line="250" selection-start-column="0" selection-end-line="250" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/obs/window-ydb-basic-settings.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/obs/window-basic-main.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="471" column="16" selection-start-line="471" selection-start-column="16" selection-end-line="471" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/obs/window-basic-status-bar.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+          <folding>
+            <marker date="1476008671419" expanded="true" signature="915:1001" placeholder="/.../" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/obs/window-basic-main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="3978" column="19" selection-start-line="3978" selection-start-column="19" selection-end-line="3978" selection-end-column="19" />
+          <folding>
+            <element signature="e#3005#3110#0" expanded="true" />
+            <element signature="e#3316#3387#0" expanded="true" />
+            <element signature="e#3411#3491#0" expanded="true" />
+            <element signature="e#11404#11447#0" expanded="true" />
+            <element signature="e#11525#11736#0" expanded="true" />
+            <element signature="e#43440#43496#0" expanded="true" />
+            <element signature="e#52146#52353#0" expanded="true" />
+            <element signature="e#62828#62926#0" expanded="true" />
+            <element signature="e#63462#63487#0" expanded="true" />
+            <element signature="e#75580#75779#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

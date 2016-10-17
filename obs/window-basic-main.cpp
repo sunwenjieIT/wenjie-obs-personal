@@ -49,7 +49,8 @@
 #include "qt-wrappers.hpp"
 #include "display-helpers.hpp"
 #include "volume-control.hpp"
-#include "remote-text.hpp"
+
+//#include "remote-text.hpp"
 
 #include "ui_OBSBasic.h"
 
@@ -143,7 +144,7 @@ double OBSBasic::getDiskFreeSpace(QString driver) {
 	//return (quint64)liTotalFreeBytes.QuadPart / 1024 / 1024 / 1024;
 }
 void OBSBasic::update_free_space() {
-	double freeSpace = getDiskFreeSpace(qst_path);
+	double freeSpace = getDiskFreeSpace(driver);
 	ui->freeSpace->setText(QString::number(freeSpace) + "G");
 }
 void OBSBasic::showEvent(QShowEvent *event) {
@@ -186,17 +187,7 @@ OBSBasic::OBSBasic(QWidget *parent)
 	  ui             (new Ui::OBSBasic)
 {
 	
-	
-	//driversList = QDir::drives();
-	//qDebug() << driversList.at(0).absoluteDir().absolutePath();
-	
-	//const char *path = config_get_string(main->Config(), "SimpleOutput",
-	//	"FilePath");
-
-	//TODO 读取剩余空间
-	qst_path = "C:/Users/wenjie/Videos/Captures";
-	qst_path = qst_path.left(qst_path.indexOf("/"));
-	double freeSpace = getDiskFreeSpace(qst_path);
+	//OBSInit的最后有部分的初始化过程, 先后顺序的问题放在了最末尾.
 
 	//窗体去标题栏
 	this->setWindowFlags(Qt::FramelessWindowHint);
@@ -212,8 +203,7 @@ OBSBasic::OBSBasic(QWidget *parent)
 	//this->setMaximumWidth(600);
 	//this->setMinimumWidth(600);
 
-	//剩余空间
-	ui->freeSpace->setText(QString::number(freeSpace) + "G");
+	
 	//去除status bar
 	ui->toggleStatusBar->setChecked(false);
 	//去除菜单栏
@@ -1279,7 +1269,7 @@ void OBSBasic::OBSInit()
 		disableSaving++;
 	}
 
-	TimedCheckForUpdates();
+	//TimedCheckForUpdates();//关闭原有的更新检查
 	loaded = true;
 
 	previewEnabled = config_get_bool(App()->GlobalConfig(),
@@ -1408,14 +1398,23 @@ void OBSBasic::OBSInit()
 		if (strcmp("monitor_capture", obs_source_get_id(mysource)) == 0) {
 			monitor_capture_source = mysource;
 			qDebug() << "this is :" << obs_data_get_bool(obs_source_get_settings(mysource), "capture_cursor");
+			
 			continue;
 		}
 		if (strcmp("wasapi_input_capture", obs_source_get_id(mysource)) == 0) {
 			wasapi_input_capture_source = mysource;
+			myitem->setSelected(false);
 			continue;
 		}
+		if (strcmp("scene", obs_source_get_id(mysource)) == 0) {
+			scene_source = mysource;
+			myitem->setSelected(false);
+			continue;
+		}
+		myitem->setSelected(false);
 		qDebug() << obs_source_get_id(mysource);
 	}
+	
 	//ActivateAudioSource(wasapi_input_capture_source);
 
 	//mousePressEvent((0, 0));
@@ -1425,6 +1424,15 @@ void OBSBasic::OBSInit()
 	
 	VolControl *vol = new VolControl(wasapi_input_capture_source, false, false);
 	ui->horizontalWidget->layout()->addWidget(vol);
+
+	//读取剩余空间
+	const char *path = config_get_string(Config(), "SimpleOutput",
+		"FilePath");
+	QString tmp = QString::fromLocal8Bit(path);
+	driver = tmp.left(QString::fromLocal8Bit(path).indexOf("\\"));
+	double freeSpace = getDiskFreeSpace(driver);
+	//剩余空间
+	ui->freeSpace->setText(QString::number(freeSpace) + "G");
 }
 
 void OBSBasic::InitHotkeys()
@@ -3965,8 +3973,8 @@ void OBSBasic::StreamingStop(int code)
 		 * reconnects are handled in the output, not in the UI */
 		errorMessage = Str("Output.ConnectFail.Disconnected");
 	}
-
-	ui->statusbar->StreamStopped();
+	//isPause = true;
+	ui->statusbar->StreamStopped(isPause);
 
 	ui->streamButton->setText(QTStr("Basic.Main.StartStreaming"));
 	ui->streamButton->setEnabled(true);
@@ -3996,6 +4004,7 @@ void OBSBasic::StartRecording()
 	if (outputHandler->RecordingActive())
 		return;
 
+	recording_status = Recoding;
 	SaveProject();
 	outputHandler->StartRecording();
 }
@@ -4021,7 +4030,7 @@ void OBSBasic::StopRecording()
 
 void OBSBasic::RecordingStart()
 {
-	ui->statusbar->RecordingStarted(outputHandler->fileOutput);
+	ui->statusbar->RecordingStarted(outputHandler->fileOutput, isReset);
 	ui->recordButton->setText(QTStr("Basic.Main.StopRecording"));
 
 	if (ui->profileMenu->isEnabled()) {
@@ -4035,7 +4044,8 @@ void OBSBasic::RecordingStart()
 
 void OBSBasic::RecordingStop(int code)
 {
-	ui->statusbar->RecordingStopped();
+	//isPause = true;
+	ui->statusbar->RecordingStopped(isPause);
 	ui->recordButton->setText(QTStr("Basic.Main.StartRecording"));
 	blog(LOG_INFO, RECORDING_STOP);
 
@@ -4122,36 +4132,36 @@ struct MyStruct
 	QString str;
 };
 bool is_update_free_space = true;
-void* update_free_space_method(void* args) {
-	MyStruct *a = (struct MyStruct*)args;
-	double free_gb;
-	while (is_update_free_space)
-	{
-		free_gb = getDiskFreeSpace("C:/");
-		//QString copy_str = a->str;
-		//LPCWSTR lpcwstrDriver = (LPCWSTR)copy_str.utf16();
-		////LPCWSTR lpcwstrDriver = (LPCWSTR)driver.utf16();
-
-		//ULARGE_INTEGER liFreeBytesAvailable, liTotalBytes, liTotalFreeBytes;
-
-		//if (!GetDiskFreeSpaceEx(lpcwstrDriver, &liFreeBytesAvailable, &liTotalBytes, &liTotalFreeBytes))
-		//{
-		//	return 0;
-		//}
-		//quint64 free_mb = (quint64)(liTotalFreeBytes.QuadPart / 1024 / 1024);//MB
-		//																	 //int temp = free_mb * 100 / 1024;
-		//double free_gb = double(free_mb * 100 / 1024) / 100;
-
-		//double dou = getDiskFreeSpace(a->str);
-		QString te = a->a->text();
-		QMetaObject::invokeMethod(a->a, "setText", Qt::QueuedConnection, Q_ARG(QString, QString::number(free_gb) + "M"));
-		blog(LOG_INFO, "update free done");
-		Sleep(2000);
-
-	}
-	blog(LOG_INFO, "finish upload free space");
-	return NULL;
-}
+//void* update_free_space_method(void* args) {
+//	MyStruct *a = (struct MyStruct*)args;
+//	double free_gb;
+//	while (is_update_free_space)
+//	{
+//		free_gb = getDiskFreeSpace("C:/");
+//		//QString copy_str = a->str;
+//		//LPCWSTR lpcwstrDriver = (LPCWSTR)copy_str.utf16();
+//		////LPCWSTR lpcwstrDriver = (LPCWSTR)driver.utf16();
+//
+//		//ULARGE_INTEGER liFreeBytesAvailable, liTotalBytes, liTotalFreeBytes;
+//
+//		//if (!GetDiskFreeSpaceEx(lpcwstrDriver, &liFreeBytesAvailable, &liTotalBytes, &liTotalFreeBytes))
+//		//{
+//		//	return 0;
+//		//}
+//		//quint64 free_mb = (quint64)(liTotalFreeBytes.QuadPart / 1024 / 1024);//MB
+//		//																	 //int temp = free_mb * 100 / 1024;
+//		//double free_gb = double(free_mb * 100 / 1024) / 100;
+//
+//		//double dou = getDiskFreeSpace(a->str);
+//		QString te = a->a->text();
+//		QMetaObject::invokeMethod(a->a, "setText", Qt::QueuedConnection, Q_ARG(QString, QString::number(free_gb) + "M"));
+//		blog(LOG_INFO, "update free done");
+//		Sleep(2000);
+//
+//	}
+//	blog(LOG_INFO, "finish upload free space");
+//	return NULL;
+//}
 
 void OBSBasic::on_recordButton_clicked()
 {
@@ -4166,7 +4176,8 @@ void OBSBasic::on_recordButton_clicked()
 	else {
 		//TODO
 		//换到非C盘下时也要能计算剩余空间
-		te = new MyThreadTest(ui->freeSpace, "C:/");
+		te = new MyThreadTest(ui->freeSpace, driver);
+		//te = new MyThreadTest(ui->freeSpace, "C:/");
 		te->start();
 		StartRecording();
 
@@ -4759,32 +4770,491 @@ void OBSBasic::mouseReleaseEvent(QMouseEvent *event) {
 
 	move(x() + dx, y() + dy);
 }
+void OBSBasic::update_timesession_view() {
+	totalSeconds++;
+
+	int seconds = totalSeconds % 60;
+	int totalMinutes = totalSeconds / 60;
+	int minutes = totalMinutes % 60;
+	int hours = totalMinutes / 60;
+
+	QString text;
+	text.sprintf("%02d:%02d:%02d", hours, minutes, seconds);
+	ui->timeSession->setText(text);
+
+	//ui->timeSession->setMinimumWidth(ui->timeSession->width());
+}
 /************************************************************************/
 /* 开始按钮                                                                     */
 /************************************************************************/
 void OBSBasic::on_recordButton_view_clicked() {
-	if (outputHandler->RecordingActive()) 
+	
+	//if (recording_status == Pausing) {
+	//	ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+	//	this->repaint();
+	//	ui->timeSession->setText("00:00:00");
+	//	isPause = false;
+	//	file_list.clear();
+	//	recording_status = Waiting;
+	//	return;
+	//}
+
+	switch (recording_status){
+		case OBSBasic::Waiting:
+			//开始
+			ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/stop.png);}");
+			isReset = true;
+
+			totalSeconds = 0;
+			refreshTimer = new QTimer(this);
+			connect(refreshTimer, SIGNAL(timeout()),
+				this, SLOT(update_timesession_view()));
+			
+			on_recordButton_clicked();
+			refreshTimer->start(1000);
+			break;
+		case OBSBasic::Pausing:
+			//结束
+			delete refreshTimer;
+			ui->timeSession->setText(QString("00:00:00"));
+
+			ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+			this->repaint();
+			isPause = false;
+			ui->timeSession->setText("00:00:00");
+			file_list.clear();
+			recording_status = Waiting;
+			//return;
+			break;
+		case OBSBasic::Recoding:
+			//结束并判断是否合并
+
+			ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+			isPause = false;
+			on_recordButton_clicked();
+			delete refreshTimer;
+			ui->timeSession->setText(QString("00:00:00"));
+			
+			recording_status = Waiting;
+			if (file_list.size() > 0) {
+				file_list.append(current_file_ap);
+				if (file_list.size() == 2) {
+					//视频文件合并
+					combineVideo(file_list.at(0), file_list.at(1));
+				}
+			}
+			file_list.clear();
+			break;
+		default:
+			break;
+	}
+/*
+	if (isPause) {
 		ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
-	else
-		ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/stop.png);}");
-	this->repaint();
-	ui->recordButton->clicked();
+		this->repaint();
+		ui->timeSession->setText("00:00:00");
+		isPause = false;
+		file_list.clear();
+		return;
+	}*/
+	//
+	//if (outputHandler->RecordingActive())
+	//	ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+	//else
+	//	ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/stop.png);}");
+	//this->repaint();
+
+	//ui->recordButton->clicked();
+	//
+	//if (!outputHandler->RecordingActive()) {
+
+	//	if (file_list.size() > 0) {
+	//		file_list.append(current_file_ap);
+	//		if (file_list.size() == 2) {
+	//			//视频文件合并
+	//			combineVideo(file_list.at(0), file_list.at(1));
+	//			file_list.removeLast();
+	//		}
+	//	}
+	//	file_list.clear();
+	//}
+	//else {
+
+	//}
+	
 	
 	/*if (outputHandler->RecordingActive())
 		St/opRecording();
 	else
 		StartRecording();*/
 }
+char* getLocal8BitChar2(QString &str)
+{
+	QByteArray temp_ba;
+	temp_ba = str.toLocal8Bit();
+	//temp_ba.da
+	char* data = temp_ba.data();
+	char* ret = new char[strlen(data) + 1];
+	strcpy(ret, data);
+	return ret;
+}
+
+AVFormatContext *in1_fmtctx = NULL, *in2_fmtctx = NULL, *out_fmtctx = NULL;
+AVStream *out_video_stream = NULL, *out_audio_stream = NULL;
+int video_stream_index = -1, audio_stream_index = -1;
+int open_input(const char * in1_name, const char * in2_name)
+{
+	int ret = -1;
+	if ((ret = avformat_open_input(&in1_fmtctx, in1_name, NULL, NULL)) < 0)
+	{
+		printf("can not open the first input context!\n");
+		return ret;
+	}
+	if ((ret = avformat_find_stream_info(in1_fmtctx, NULL)) < 0)
+	{
+		printf("can not find the first input stream info!\n");
+		return ret;
+	}
+
+	if ((ret = avformat_open_input(&in2_fmtctx, in2_name, NULL, NULL)) < 0)
+	{
+		printf("can not open the first input context!\n");
+		return ret;
+	}
+	if ((ret = avformat_find_stream_info(in2_fmtctx, NULL)) < 0)
+	{
+		printf("can not find the second input stream info!\n");
+		return ret;
+	}
+}
+
+int open_output(const char * out_name)
+{
+	int ret = -1;
+	if ((ret = avformat_alloc_output_context2(&out_fmtctx, NULL, NULL, out_name)) < 0)
+	{
+		printf("can not alloc context for output!\n");
+		return ret;
+	}
+
+	//new stream for out put
+	for (int i = 0; i < in1_fmtctx->nb_streams; i++)
+	{
+		if (in1_fmtctx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO)
+		{
+			video_stream_index = i;
+			out_video_stream = avformat_new_stream(out_fmtctx, NULL);
+			if (!out_video_stream)
+			{
+				printf("Failed allocating output1 video stream\n");
+				ret = AVERROR_UNKNOWN;
+				return ret;
+			}
+			if ((ret = avcodec_copy_context(out_video_stream->codec, in1_fmtctx->streams[i]->codec)) < 0)
+			{
+				printf("can not copy the video codec context!\n");
+				return ret;
+			}
+			out_video_stream->codec->codec_tag = 0;
+			if (out_fmtctx->oformat->flags & AVFMT_GLOBALHEADER)
+			{
+				out_video_stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
+			}
+		}
+		else if (in1_fmtctx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
+		{
+			audio_stream_index = i;
+			out_audio_stream = avformat_new_stream(out_fmtctx, NULL);
+
+			if (!out_audio_stream)
+			{
+				printf("Failed allocating output1 video stream\n");
+				ret = AVERROR_UNKNOWN;
+				return ret;
+			}
+			if ((ret = avcodec_copy_context(out_audio_stream->codec, in1_fmtctx->streams[i]->codec)) < 0)
+			{
+				printf("can not copy the video codec context!\n");
+				return ret;
+			}
+			out_audio_stream->codec->codec_tag = 0;
+			if (out_fmtctx->oformat->flags & AVFMT_GLOBALHEADER)
+			{
+				out_audio_stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
+			}
+		}
+	}
+
+	//open output file
+	if (!(out_fmtctx->oformat->flags & AVFMT_NOFILE))
+	{
+		if ((ret = avio_open(&out_fmtctx->pb, out_name, AVIO_FLAG_WRITE)) < 0)
+		{
+			printf("can not open the out put file handle!\n");
+			return ret;
+		}
+	}
+
+	//write out  file header
+	if ((ret = avformat_write_header(out_fmtctx, NULL)) < 0)
+	{
+		printf("Error occurred when opening video output file\n");
+		return ret;
+	}
+}
 /************************************************************************/
-/* 移动窗体                                                                     */
+/* 合并视频文件                                                                     */
+/************************************************************************/
+void OBSBasic::combineVideo(QString video1, QString video2) {
+	//char out_name[100];
+	//sprintf(out_name, "C:/Users/wenjie/Desktop/2016-10-09 18-28-00-tmp.%s", "flv");
+	bool is_combine_success = true;
+
+	char *video1_char = getLocal8BitChar2(video1);
+	char *video2_char = getLocal8BitChar2(video2);
+	
+	const char *path = config_get_string(Config(), "SimpleOutput",
+		"FilePath");
+	
+	QString path_qstr = QString(QString::fromLocal8Bit(path));
+	path_qstr = path_qstr.replace(QString("\\"), QString("/"));
+	QString temp_file = path_qstr + "/tmp-" + current_file_name;
+	//QString temp_file = path_qstr + "\\tmp-" + current_file_name;
+
+	char *temp_file_char = getLocal8BitChar2(temp_file);
+
+	//char *temp_file_char = "C:\Users\wenjie\Desktop/tmp-2016-10-11 20-39-05.mp4";
+	av_register_all();
+	//argv[1] test1.avi argv[2] test2.avi argv[3] avi
+	
+	int a = 0;
+	while (outputHandler->Active())
+	{
+		//文件IO还没结束. 
+		a++;
+		blog(LOG_INFO, "file io active %d", a);
+		
+	}
+	if (!outputHandler->Active()) {
+
+		if (0 > open_input(video1_char, video2_char))
+		{
+			is_combine_success = false;
+			goto end;
+		}
+	}
+	else
+	{
+		goto back;
+	}
+
+	if (0 > open_output(temp_file_char))
+	{
+		is_combine_success = false;
+		goto end;
+	}
+
+	AVFormatContext *input_ctx = in1_fmtctx;
+	AVPacket pkt;
+	int pts_v, pts_a, dts_v, dts_a;
+	while (1)
+	{
+		if (0 > av_read_frame(input_ctx, &pkt))
+		{
+			if (input_ctx == in1_fmtctx)
+			{
+				float vedioDuraTime, audioDuraTime;
+
+				//calc the first media dura time
+				vedioDuraTime = ((float)input_ctx->streams[video_stream_index]->time_base.num /
+					(float)input_ctx->streams[video_stream_index]->time_base.den) * ((float)pts_v);
+				audioDuraTime = ((float)input_ctx->streams[audio_stream_index]->time_base.num /
+					(float)input_ctx->streams[audio_stream_index]->time_base.den) * ((float)pts_a);
+
+				//calc the pts and dts end of the first media
+				if (audioDuraTime > vedioDuraTime)
+				{
+					dts_v = pts_v = audioDuraTime / ((float)input_ctx->streams[video_stream_index]->time_base.num /
+						(float)input_ctx->streams[video_stream_index]->time_base.den);
+					dts_a++;
+					pts_a++;
+				}
+				else
+				{
+					dts_a = pts_a = vedioDuraTime / ((float)input_ctx->streams[audio_stream_index]->time_base.num /
+						(float)input_ctx->streams[audio_stream_index]->time_base.den);
+					dts_v++;
+					pts_v++;
+				}
+				input_ctx = in2_fmtctx;
+				continue;
+			}
+			break;
+		}
+
+		if (pkt.stream_index == video_stream_index)
+		{
+			if (input_ctx == in2_fmtctx)
+			{
+				pkt.pts += pts_v;
+				pkt.dts += dts_v;
+			}
+			else
+			{
+				pts_v = pkt.pts;
+				dts_v = pkt.dts;
+			}
+		}
+		else if (pkt.stream_index == audio_stream_index)
+		{
+			if (input_ctx == in2_fmtctx)
+			{
+				pkt.pts += pts_a;
+				pkt.dts += dts_a;
+			}
+			else
+			{
+				pts_a = pkt.pts;
+				dts_a = pkt.dts;
+			}
+		}
+
+		pkt.pts = av_rescale_q_rnd(pkt.pts, input_ctx->streams[pkt.stream_index]->time_base,
+			out_fmtctx->streams[pkt.stream_index]->time_base, (AVRounding)(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+		pkt.dts = av_rescale_q_rnd(pkt.dts, input_ctx->streams[pkt.stream_index]->time_base,
+			out_fmtctx->streams[pkt.stream_index]->time_base, (AVRounding)(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+		pkt.pos = -1;
+
+		if (av_interleaved_write_frame(out_fmtctx, &pkt) < 0)
+		{
+			printf("Error muxing packet\n");
+			//break;
+		}
+		av_free_packet(&pkt);
+	}
+
+	av_write_trailer(out_fmtctx);
+	/*QFile::remove("C:/Users/wenjie/Desktop/2016-10-09 18-23-17.flv");
+	QFile::remove("C:/Users/wenjie/Desktop/2016-10-09 18-28-00.flv");
+	QFile::rename("C:/Users/wenjie/Desktop/2016-10-09 18-28-00-tmp.flv", "C:/Users/wenjie/Desktop/2016-10-09 18-28-00.flv");*/
+
+end:
+	avformat_close_input(&in1_fmtctx);
+	avformat_close_input(&in2_fmtctx);
+
+	/* close output */
+	if (out_fmtctx && !(out_fmtctx->oformat->flags & AVFMT_NOFILE))
+		avio_close(out_fmtctx->pb);
+
+	avformat_free_context(out_fmtctx);
+
+final:
+	if (is_combine_success) {
+		//删除第二个视频文件
+		while (!QFile::remove(video2));
+		while (!QFile::remove(video1));
+		QFile::rename(temp_file, video1);
+	}
+	//while (!QFile::rename(temp_file, video1));
+	
+	delete video1_char;
+	delete video2_char;
+	delete temp_file_char;
+	video1_char = NULL;
+	video2_char = NULL;
+	temp_file_char = NULL;
+
+	in1_fmtctx = NULL, in2_fmtctx = NULL, out_fmtctx = NULL;
+	out_video_stream = NULL, out_audio_stream = NULL;
+	video_stream_index = -1, audio_stream_index = -1;
+back:
+	blog(LOG_INFO, "combine finish");
+}
+/************************************************************************/
+/* 暂停/继续                                                                     */
 /************************************************************************/
 void OBSBasic::on_resumeButton_view_clicked() {
+	/*if (recording_status == Waiting) {
+		return;
+	}*/
+	//ui->resumeButton_view->setDisabled(true);
+	
+	switch (recording_status){
+		case OBSBasic::Waiting:
+			break;
+		case OBSBasic::Pausing:
+			//继续
+			/*refreshTimer = new QTimer(this);
+			totalSeconds = old_totalSeconds;
+			connect(refreshTimer, SIGNAL(timeout()),
+				this, SLOT(update_timesession_view()));
+			refreshTimer->start(1000);*/
+
+			isReset = false;
+			on_recordButton_clicked();
+			refreshTimer->start(1000);
+			break;
+		case OBSBasic::Recoding:
+			//暂停
+			/*old_totalSeconds = totalSeconds;
+			delete refreshTimer;*/
+
+
+
+			isPause = true;
+			on_recordButton_clicked();
+			refreshTimer->stop();
+			file_list.append(current_file_ap);
+			if (file_list.size() == 2) {
+				//视频文件合并
+				combineVideo(file_list.at(0), file_list.at(1));
+				if (QFile::exists(file_list.at(1))) {
+					QFile::remove(file_list.at(1));
+				}
+				file_list.removeLast();
+			}
+			recording_status = Pausing;
+			break;
+		default:
+			break;
+	}
+	//ui->resumeButton_view->setDisabled(false);
+	/*if (!outputHandler->RecordingActive() && !isPause) {
+		return;
+	}*/
+
+	//确定是什么操作
+
+	//ui->recordButton->clicked();
+
+	//isPause = !isPause;
+	//if (isPause) {
+	//	//暂停
+	//	file_list.append(current_file_ap);
+	//	if (file_list.size() == 2) {
+	//		//视频文件合并
+	//		combineVideo(file_list.at(0), file_list.at(1));
+	//		file_list.removeLast();
+	//	}
+	//}
+	//else{
+	//	//恢复录制(重新开始录制)
+	//	
+	//}
+
 	
 }
+
+/************************************************************************/
+/* 关闭                                                                     */
+/************************************************************************/
 void OBSBasic::on_exitButton_view_clicked() {
 	this->close();
 	//ui->exitButton->clicked();
 }
+/************************************************************************/
+/* 设置                                                                     */
+/************************************************************************/
 void OBSBasic::on_settingsButton_view_clicked() {
 	
 

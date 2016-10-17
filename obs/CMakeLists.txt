@@ -30,6 +30,7 @@ else()
 endif()
 
 find_package(Qt5Widgets ${FIND_MODE})
+find_package(Qt5Network ${FIND_MODE})
 
 if(NOT Qt5Widgets_FOUND)
 	if (ENABLE_UI)
@@ -126,6 +127,13 @@ set(upload_HEADERS
 	oss/upload_config.h
 )
 
+#set(navbar_HEADERS
+#	colordefines.h
+#	navdelegate.h
+#	navmodel.h
+#	navview.h
+#)
+
 set(obs_SOURCES
 	${obs_PLATFORM_SOURCES}
 	obs-app.cpp
@@ -175,6 +183,7 @@ set(obs_SOURCES
 	window-ydb-filename.cpp
 	YDBRefreshSpace.cpp
 	YDBUpdate.cpp
+	YDB-net.cpp
 	window-ydb-basic-settings.cpp
 #	oss_sample_util.c 
 #	oss_config.c
@@ -235,6 +244,7 @@ set(obs_HEADERS
 	window-ydb-filename.h
 	YDBRefreshSpace.h
 	YDBUpdate.h
+	YDB-net.h
 	window-ydb-basic-settings.h
 #	oss_config.h
 #	oss_sample_util.h
@@ -330,6 +340,7 @@ target_link_libraries(obs
 	libobs
 	libff
 	Qt5::Widgets
+	Qt5::Network
 #	oss-sdk
 	curl
 	mxml1

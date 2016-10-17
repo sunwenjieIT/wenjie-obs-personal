@@ -618,12 +618,16 @@ bool SimpleOutput::StartRecording()
 	char lastChar = strPath.back();
 	if (lastChar != '/' && lastChar != '\\')
 		strPath += "/";
+	string fileName = GenerateSpecifiedFilename(ffmpegOutput ? "avi" : format,
+		noSpace, filenameFormat);
+	strPath += fileName;
+	main->current_file_name = QString(QString::fromLocal8Bit(fileName.c_str()));
 
-	strPath += GenerateSpecifiedFilename(ffmpegOutput ? "avi" : format,
-			noSpace, filenameFormat);
 	ensure_directory_exists(strPath);
 	if (!overwriteIfExists)
 		FindBestFilename(strPath, noSpace);
+
+	main->current_file_ap = QString(QString::fromLocal8Bit(strPath.c_str()));
 
 	if (!ffmpegOutput) {
 		obs_output_set_video_encoder(fileOutput, h264Recording);
@@ -631,6 +635,8 @@ bool SimpleOutput::StartRecording()
 	}
 
 	obs_data_t *settings = obs_data_create();
+	
+		
 	obs_data_set_string(settings, ffmpegOutput ? "url" : "path",
 			strPath.c_str());
 	obs_data_set_string(settings, "muxer_settings", mux);

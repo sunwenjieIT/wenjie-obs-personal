@@ -50,7 +50,7 @@
          <string>Basic.Settings.General</string>
         </property>
         <property name="icon">
-         <iconset resource="obs.qrc">
+         <iconset>
           <normaloff>:/settings/images/settings/system-settings-3.png</normaloff>:/settings/images/settings/system-settings-3.png</iconset>
         </property>
        </item>
@@ -59,7 +59,7 @@
          <string>Basic.Settings.Stream</string>
         </property>
         <property name="icon">
-         <iconset resource="obs.qrc">
+         <iconset>
           <normaloff>:/settings/images/settings/network.png</normaloff>:/settings/images/settings/network.png</iconset>
         </property>
        </item>
@@ -68,7 +68,7 @@
          <string>Basic.Settings.Output</string>
         </property>
         <property name="icon">
-         <iconset resource="obs.qrc">
+         <iconset>
           <normaloff>:/settings/images/settings/network-bluetooth.png</normaloff>:/settings/images/settings/network-bluetooth.png</iconset>
         </property>
        </item>
@@ -77,7 +77,7 @@
          <string>Basic.Settings.Audio</string>
         </property>
         <property name="icon">
-         <iconset resource="obs.qrc">
+         <iconset>
           <normaloff>:/settings/images/settings/decibel_audio_player.png</normaloff>:/settings/images/settings/decibel_audio_player.png</iconset>
         </property>
        </item>
@@ -86,7 +86,7 @@
          <string>Basic.Settings.Video</string>
         </property>
         <property name="icon">
-         <iconset resource="obs.qrc">
+         <iconset>
           <normaloff>:/settings/images/settings/video-display-3.png</normaloff>:/settings/images/settings/video-display-3.png</iconset>
         </property>
        </item>
@@ -95,7 +95,7 @@
          <string>Basic.Settings.Hotkeys</string>
         </property>
         <property name="icon">
-         <iconset resource="obs.qrc">
+         <iconset>
           <normaloff>:/settings/images/settings/preferences-desktop-keyboard-shortcuts.png</normaloff>:/settings/images/settings/preferences-desktop-keyboard-shortcuts.png</iconset>
         </property>
        </item>
@@ -104,7 +104,7 @@
          <string>Basic.Settings.Advanced</string>
         </property>
         <property name="icon">
-         <iconset resource="obs.qrc">
+         <iconset>
           <normaloff>:/settings/images/settings/advanced.png</normaloff>:/settings/images/settings/advanced.png</iconset>
         </property>
        </item>
@@ -2840,8 +2840,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>818</width>
-           <height>616</height>
+           <width>98</width>
+           <height>28</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="hotkeyLayout">
@@ -2887,7 +2887,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>803</width>
+              <width>649</width>
               <height>671</height>
              </rect>
             </property>

@@ -240,6 +240,7 @@ static void input_and_output(struct audio_output *audio,
 
 static void *audio_thread(void *param)
 {
+	blog(LOG_INFO, "audio thread start");
 	struct audio_output *audio = param;
 	size_t rate = audio->info.samples_per_sec;
 	uint64_t samples = 0;
@@ -256,7 +257,7 @@ static void *audio_thread(void *param)
 		profile_store_name(obs_get_profiler_name_store(),
 				"audio_thread(%s)", audio->info.name);
 
-	while (os_event_try(audio->stop_event) == EAGAIN) {
+ 	while (os_event_try(audio->stop_event) == EAGAIN) {
 		uint64_t cur_time;
 
 		os_sleep_ms(audio_wait_time);
@@ -278,6 +279,7 @@ static void *audio_thread(void *param)
 		profile_reenable_thread();
 	}
 
+	blog(LOG_INFO, "audio thread over");
 	return NULL;
 }
 

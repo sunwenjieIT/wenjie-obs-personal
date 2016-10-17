@@ -5,7 +5,9 @@
 #include <QDebug>
 #include <windows.h>
 #include "obs-app.hpp"
-
+#include "remote-text.hpp"
+#include "QPoint"
+#include "QThread"
 #include <QDateTime>
 #include <QFile>
 
@@ -17,6 +19,7 @@ YDBSettings::YDBSettings(QWidget *parent, OBSSource monitor_capture_source) :
 	this->monitor_capture_source = monitor_capture_source;
     ui->setupUi(this);
 	//this->setWindowFlags(Qt::CustomizeWindowHint|Qt::WindowCloseButtonHint);
+	my_videos = ui->treeWidget->topLevelItem(0);
 	update_file_list();
 	//setWindowFlags(windowFlags()&~Qt::CustomizeWindowHint);
 	//this->setWindowFlags(Qt::FramelessWindowHint);
@@ -39,31 +42,102 @@ void YDBSettings::update_file_list() {
 	QString sext;
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 	myDir.setSorting(QDir::Time);
-	ui->listWidget->clear();
+
+	for (int i = my_videos->childCount() - 1; i >= 0; i--) {
+		my_videos->removeChild(my_videos->child(i));
+	}
+	//ui->listWidget->clear();
 	for (unsigned int i = 0; i < myDir.count(); i++)
 	{
 		sext = myDir[i].toLower();
-		int point = sext.lastIndexOf(".");
+		if(check_filetype(sext)){
+			QTreeWidgetItem* item = new QTreeWidgetItem(my_videos);
+			item->setText(0, sext);
+		/*int point = sext.lastIndexOf(".");
 		if (point != -1) {
 			file_type = sext.mid(point);
 			if (file_type == ".flv" || file_type == ".mp4" || file_type == ".mov" || file_type == ".mkv"
-				|| file_type == ".ts" || file_type == ".m3u8" ){
-				ui->listWidget->addItem(sext);
-			}
+				|| file_type == ".ts" || file_type == ".m3u8" ){*/
+				//ui->listWidget->addItem(sext);
+				/************************************************************************/
+				/*         QTreeWidgetItem *__qtreewidgetitem1 = new QTreeWidgetItem(treeWidget);
+								__qtreewidgetitem1->setIcon(0, icon1);
+								new QTreeWidgetItem(__qtreewidgetitem1);
+								new QTreeWidgetItem(__qtreewidgetitem1);
+								new QTreeWidgetItem(__qtreewidgetitem1);                                                                     */
+				/************************************************************************/
+				//QTreeWidgetItem* my_videos = ui->treeWidget->topLevelItem(0);
 		}
+	}
 		//flv,mp4,mov,mkv,ts,m3u8
 		/*if (-1 != sext.indexOf(".flv") || -1 != sext.indexOf(".mp4") || -1 != sext.indexOf(".mov")
 			|| -1 != sext.indexOf(".mkv") || -1 != sext.indexOf(".ts") || -1 != sext.indexOf(".m3u8")) {
 			ui->listWidget->addItem(sext);
 		}*/
-	}
 	if (hasItem()) {
-		file_path = directory_path + ui->listWidget->item(0)->text();
-		ui->listWidget->itemClicked(ui->listWidget->item(0));
+		//file_path = directory_path + ui->listWidget->item(0)->text();
+		//ui->listWidget->itemClicked(ui->listWidget->item(0));
+		file_path = directory_path + my_videos->child(0)->text(0);
+		on_treeWidget_itemClicked(my_videos->child(0), 0);
+		//ui->treeWidget->click
 	}
 }
+/************************************************************************/
+/* 检查文件格式, 是视频嘛? true:false                                                                     */
+/************************************************************************/
+bool YDBSettings::check_filetype(QString file) {
+	int point = file.lastIndexOf(".");
+	if (point == -1)
+		return false;
+
+	QString file_type = file.mid(point);
+	return (file_type == ".flv" || file_type == ".mp4" || file_type == ".mov" || file_type == ".mkv"
+		|| file_type == ".ts" || file_type == ".m3u8");
+}
+/************************************************************************/
+/* 响应左侧导航栏的点击事件                                                                     */
+/************************************************************************/
+void YDBSettings::on_treeWidget_itemClicked(QTreeWidgetItem* item, int count) {
+
+	QString text = item->text(0);
+	if (check_filetype(text)) {
+		file_path = directory_path + text;
+		//file_path = filepathQstring;
+		this->tree_item = item;
+		update_video_args(file_path);
+	}
+
+}
+void YDBSettings::on_treeWidget_itemDoubleClicked(QTreeWidgetItem* item, int count) {
+	QString text = item->text(0);
+	QString test;
+	int a = ui->treeWidget->currentColumn();
+	int b = item->columnCount();
+	if (text == "\346\226\207\344\273\266\344\277\235\345\255\230\350\256\276\347\275\256") {
+		//文件保存设置
+		YDBFilePath pathDialog(this, main);
+		pathDialog.exec();
+	}
+	else if (text == "\345\275\225\345\210\266\350\256\276\347\275\256"){
+		//录制设置
+		YDBBasicSettings ydb_basic_settings(this->parentWidget(), monitor_capture_source);
+		ydb_basic_settings.exec();
+	}
+	else if (text.compare("\345\205\263\344\272\216") == 0) {
+		//关于(更新)
+		YDBUpdate update;
+		update.exec();
+	}
+	else if (text == "\345\270\256\345\212\251") {
+		//TODO 
+	}
+}
+/************************************************************************/
+/* 更新文件名                                                                     */
+/************************************************************************/
 void YDBSettings::update_file_name(QString file_name) {
-	item->setText(file_name);
+	tree_item->setText(0, file_name);
+	//item->setText(file_name);
 
 	//实例QFileInfo 函数
 	QFileInfo file(file_path);
@@ -84,25 +158,16 @@ void YDBSettings::update_file_name(QString file_name) {
 	}
 }
 bool YDBSettings::hasItem() {
-	return ui->listWidget->count() > 0;
+	return my_videos->childCount();
+	//return ui->listWidget->count() > 0;
 }
 /************************************************************************/
-/* 点击item                                                                     */
+/* 更新视频信息(视频大小 码率 时长 预览图)                                                                     */
 /************************************************************************/
-void YDBSettings::on_listWidget_itemClicked(QListWidgetItem* item) {
-	if (NULL == item) return;
-	ui->listWidget->setItemSelected(item, true);
-	
-	file_path = directory_path + item->text();
-	//file_path = "C:/Users/wenjie/Videos/" + item->text();
-	this->item = item;
-	QString text = item->text();
-	//TODO
-	QString filepathQstring = directory_path + text;
-	//QString filepathQstring = "C:/Users/wenjie/Videos/" + text;
-	QFileInfo fileInfo = QFileInfo(filepathQstring);
+void YDBSettings::update_video_args(QString tmp_file_path) {
+	QFileInfo fileInfo = QFileInfo(tmp_file_path);
 	double size_byte = (double)(fileInfo.size() * 100 / 1024 / 1024) / 100;
-	ui->label_9->setText(QString::number(size_byte) + " M");
+	ui->size_value->setText(QString::number(size_byte) + " M");
 	AVFormatContext *pFormatCtx;
 	int             i, videoindex, PictureSize;
 	AVCodecContext  *pCodecCtx;
@@ -110,7 +175,7 @@ void YDBSettings::on_listWidget_itemClicked(QListWidgetItem* item) {
 	AVFrame *pFrame, *pFrameRGB;
 	AVPacket packet;
 	int ret, got_picture;
-	char* filepath = YDBUtil::getLocal8BitChar(filepathQstring);
+	char* filepath = YDBUtil::getLocal8BitChar(tmp_file_path);
 	int64_t time_, time_total;
 
 	struct SwsContext *pSwsCtx;
@@ -126,7 +191,7 @@ void YDBSettings::on_listWidget_itemClicked(QListWidgetItem* item) {
 		qDebug() << "Couldn't open input stream.";
 		return;
 	}
-	
+
 	if (avformat_find_stream_info(pFormatCtx, NULL) < 0) {
 		qDebug() << "Couldn't find stream information.";
 		return;
@@ -226,9 +291,9 @@ void YDBSettings::on_listWidget_itemClicked(QListWidgetItem* item) {
 						qDebug() << "Write Image Error!";
 						return;
 					}
-					ui->label_7->setText(QString::number(pFormatCtx->bit_rate / 1000) + "kbps");
+					ui->kbps_value->setText(QString::number(pFormatCtx->bit_rate / 1000) + "kbps");
 					QTime t = QTime::fromMSecsSinceStartOfDay(pFormatCtx->duration / 1000);
-					ui->label_8->setText(t.toString("hh:mm:ss"));
+					ui->time_value->setText(t.toString("hh:mm:ss"));
 
 					time_ = av_gettime_relative() - time_;
 					qDebug() << "write frame, costs time" << time_ / 1000000.0;
@@ -252,66 +317,239 @@ void YDBSettings::on_listWidget_itemClicked(QListWidgetItem* item) {
 	time_total = av_gettime_relative() - time_total;
 	qDebug() << "all done, costs time:" << time_total / 1000000.0;
 	//QMessageBox::information(NULL, "success title", "picture success!", QMessageBox::Yes, QMessageBox::Yes);
-
 }
+/************************************************************************/
+/* 点击item                                                                     */
+/************************************************************************/
+//void YDBSettings::on_listWidget_itemClicked(QListWidgetItem* item) {
+//	if (NULL == item) return;
+//	ui->listWidget->setItemSelected(item, true);
+//	
+//	file_path = directory_path + item->text();
+//	//file_path = "C:/Users/wenjie/Videos/" + item->text();
+//	this->item = item;
+//	QString text = item->text();
+//	//TODO
+//	QString filepathQstring = directory_path + text;
+//	//QString filepathQstring = "C:/Users/wenjie/Videos/" + text;
+//	QFileInfo fileInfo = QFileInfo(filepathQstring);
+//	double size_byte = (double)(fileInfo.size() * 100 / 1024 / 1024) / 100;
+//	ui->size_value->setText(QString::number(size_byte) + " M");
+//	AVFormatContext *pFormatCtx;
+//	int             i, videoindex, PictureSize;
+//	AVCodecContext  *pCodecCtx;
+//	AVCodec         *pCodec;
+//	AVFrame *pFrame, *pFrameRGB;
+//	AVPacket packet;
+//	int ret, got_picture;
+//	char* filepath = YDBUtil::getLocal8BitChar(filepathQstring);
+//	int64_t time_, time_total;
+//
+//	struct SwsContext *pSwsCtx;
+//	uint8_t *outBuff;
+//	time_total = av_gettime_relative();
+//	av_register_all();
+//	avformat_network_init();
+//
+//	pFormatCtx = avformat_alloc_context();
+//	time_ = av_gettime_relative();
+//
+//	if (avformat_open_input(&pFormatCtx, filepath, NULL, NULL) != 0) {
+//		qDebug() << "Couldn't open input stream.";
+//		return;
+//	}
+//	
+//	if (avformat_find_stream_info(pFormatCtx, NULL) < 0) {
+//		qDebug() << "Couldn't find stream information.";
+//		return;
+//	}
+//
+//	videoindex = -1;
+//
+//	for (i = 0; i < pFormatCtx->nb_streams; i++) {
+//		if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
+//			videoindex = i;
+//			break;
+//		}
+//	}
+//
+//	if (videoindex == -1) {
+//		qDebug() << "Didn't find a video stream.";
+//		return;
+//	}
+//
+//	pCodecCtx = pFormatCtx->streams[videoindex]->codec;
+//	pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
+//	if (pCodec == NULL) {
+//		qDebug() << "Codec not found.";
+//		return;
+//	}
+//	if (avcodec_open2(pCodecCtx, pCodec, NULL) < 0) {
+//		qDebug() << "Could not open codec.";
+//		return;
+//	}
+//
+//	pFrame = av_frame_alloc();
+//	pFrameRGB = av_frame_alloc();
+//	if (pFrame == NULL || pFrameRGB == NULL)
+//	{
+//		qDebug() << "avframe malloc failed!";
+//		return;
+//	}
+//	//PictureSize = avpicture_get_size(AV_PIX_FMT_YUVJ420P, pCodecCtx->width, pCodecCtx->height);
+//	//TODO
+//	PictureSize = av_image_get_buffer_size(AV_PIX_FMT_YUVJ420P, pCodecCtx->width, pCodecCtx->height, 1);
+//	outBuff = (uint8_t*)av_malloc(PictureSize * sizeof(uint8_t));
+//
+//	if (outBuff == NULL) {
+//		qDebug() << "av malloc failed!";
+//		printf("av malloc failed!\n");
+//		return;
+//	}
+//	avpicture_fill((AVPicture *)pFrameRGB, outBuff, AV_PIX_FMT_YUVJ420P, pCodecCtx->width, pCodecCtx->height);
+//	av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize, outBuff, AV_PIX_FMT_YUV420P,
+//		pCodecCtx->width, pCodecCtx->height, 1);
+//
+//	pSwsCtx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_YUVJ420P, SWS_BICUBIC, NULL, NULL, NULL);
+//	time_ = av_gettime_relative() - time_;
+//	qDebug() << "open file and find info, cost time : " << time_ / 1000000.0;
+//	printf("open file and find info, cost time: %0.3fs\n", time_ / 1000000.0);
+//
+//	time_ = av_gettime_relative();
+//	int64_t timestamp = atoi("1");
+//	//int64_t timestamp = atoi(argv[1]);
+//	timestamp = av_rescale(timestamp, pFormatCtx->streams[videoindex]->time_base.den, (int64_t)pFormatCtx->streams[videoindex]->time_base.num);
+//
+//	av_seek_frame(pFormatCtx, videoindex, timestamp, AVSEEK_FLAG_BACKWARD);
+//	avcodec_flush_buffers(pFormatCtx->streams[videoindex]->codec);
+//	time_ = av_gettime_relative() - time_;
+//	qDebug() << "seek frame, costs time:" << time_ / 1000000.0;
+//	printf("seek frame, costs time: %0.3fs\n", time_ / 1000000.0);
+//	AVPacket avpkt;
+//	av_init_packet(&avpkt);
+//	avpkt.data = NULL;
+//	avpkt.size = 0;
+//
+//	time_ = av_gettime_relative();
+//	while (av_read_frame(pFormatCtx, &packet) >= 0) {
+//		if (packet.stream_index == videoindex) {
+//			if (packet.flags) {
+//				if ((ret = avcodec_decode_video2(pCodecCtx, pFrame, &got_picture, &packet)) < 0) {
+//					qDebug() << "Decode Error!";
+//					printf("Decode Error!\n");
+//					return;
+//				}
+//				while (got_picture == 0) {
+//					Sleep(10);
+//					if ((ret = avcodec_decode_video2(pCodecCtx, pFrame, &got_picture, &avpkt)) < 0) {
+//						printf("Decode Error!\n");
+//						qDebug() << "Decode Error!";
+//						return;
+//					}
+//				}
+//				if (got_picture) {
+//					time_ = av_gettime_relative() - time_;
+//					qDebug() << "read and decode frame, costs time:" << time_ / 1000000.0;
+//
+//					time_ = av_gettime_relative();
+//					sws_scale(pSwsCtx, (uint8_t const * const *)pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize);
+//					//if (SavetoJPEG(pFrameRGB, pFormatCtx->streams[videoindex], argv[3], pCodecCtx->width, pCodecCtx->height) < 0) {
+//					if (SavetoJPEG(pFrameRGB, pFormatCtx->streams[videoindex], filepath, pCodecCtx->width, pCodecCtx->height) < 0) {
+//						qDebug() << "Write Image Error!";
+//						return;
+//					}
+//					ui->kbps_value->setText(QString::number(pFormatCtx->bit_rate / 1000) + "kbps");
+//					QTime t = QTime::fromMSecsSinceStartOfDay(pFormatCtx->duration / 1000);
+//					ui->time_value->setText(t.toString("hh:mm:ss"));
+//
+//					time_ = av_gettime_relative() - time_;
+//					qDebug() << "write frame, costs time" << time_ / 1000000.0;
+//					av_packet_unref(&packet);
+//					break;
+//				}
+//
+//			}
+//
+//		}
+//		av_packet_unref(&packet);
+//	}
+//	sws_freeContext(pSwsCtx);
+//	av_packet_unref(&avpkt);
+//	av_free(outBuff);
+//	av_free(pFrameRGB);
+//	av_free(pFrame);
+//	delete filepath;
+//	avcodec_close(pCodecCtx);
+//	avformat_close_input(&pFormatCtx);
+//	time_total = av_gettime_relative() - time_total;
+//	qDebug() << "all done, costs time:" << time_total / 1000000.0;
+//	//QMessageBox::information(NULL, "success title", "picture success!", QMessageBox::Yes, QMessageBox::Yes);
+//
+//}
 /************************************************************************/
 /* 我的视频                                                                     */
 /************************************************************************/
-void YDBSettings::on_videoButton_clicked() {
-	//ui->listWidget->isHidden
-	bool isHidden = ui->listWidget->isHidden();
-	if (isHidden)
-		ui->listWidget->show();
-	else
-		ui->listWidget->hide();
-}
+//void YDBSettings::on_videoButton_clicked() {
+//	//ui->listWidget->isHidden
+//	bool isHidden = ui->listWidget->isHidden();
+//	if (isHidden)
+//		ui->listWidget->show();
+//	else
+//		ui->listWidget->hide();
+//}
 /************************************************************************/
 /* 录制设置                                                                     */
 /************************************************************************/
-void YDBSettings::on_videoSettingsButton_clicked() {
-	YDBBasicSettings ydb_basic_settings(this->parentWidget(), monitor_capture_source);
-	ydb_basic_settings.exec();
-	//QMetaObject::invokeMethod(this->parentWidget(), "on_settingsButton_clicked", Qt::AutoConnection);
-}
+//void YDBSettings::on_videoSettingsButton_clicked() {
+//	YDBBasicSettings ydb_basic_settings(this->parentWidget(), monitor_capture_source);
+//	ydb_basic_settings.exec();
+//	//QMetaObject::invokeMethod(this->parentWidget(), "on_settingsButton_clicked", Qt::AutoConnection);
+//}
 /************************************************************************/
 /* 文件保存设置                                                                     */
 /************************************************************************/
-void YDBSettings::on_pathSettingsButton_clicked() {
-	YDBFilePath pathDialog(this, main);
-	pathDialog.exec();
-}
+//void YDBSettings::on_pathSettingsButton_clicked() {
+//	YDBFilePath pathDialog(this, main);
+//	pathDialog.exec();
+//}
 /************************************************************************/
 /* 关于                                                                     */
 /************************************************************************/
-void YDBSettings::on_aboutButton_clicked() {
-	YDBUpdate update;
-	update.exec();
-}
+//void YDBSettings::on_aboutButton_clicked() {
+//	YDBUpdate update;
+//	update.exec();
+//}
 /************************************************************************/
 /* 帮助                                                                     */
 /************************************************************************/
-void YDBSettings::on_helpButton_clicked() {
-
-}
+//void YDBSettings::on_helpButton_clicked() {
+//
+//}
 /************************************************************************/
 /* 文件删除                                                                     */
 /************************************************************************/
 void YDBSettings::on_deleteButton_clicked() {
-	if (NULL == item) return;
+	//if (NULL == item) return;
+	if (NULL == tree_item) return;
+
 	qDebug() << file_path;
 
-	ui->listWidget->removeItemWidget(item);
-	delete item;
-	item = NULL;
+	my_videos->removeChild(tree_item);
+	delete tree_item;
+	tree_item = NULL;
+	//ui->listWidget->removeItemWidget(item);
+	//delete item;
+	//item = NULL;
 	if (QFile::remove(file_path)) {
 		if (hasItem()) {
-			on_listWidget_itemClicked(ui->listWidget->item(0));
+			on_treeWidget_itemClicked(my_videos->child(0), 0);
+			//on_listWidget_itemClicked(ui->listWidget->item(0));
 		}
 		else {
 			ui->horizontalLayout_3->removeWidget(show_img);
-			ui->label_7->clear();
-			ui->label_8->clear();
-			ui->label_9->clear();
+			ui->kbps_value->clear();
+			ui->time_value->clear();
+			ui->size_value->clear();
 			delete show_img;
 		}
 	}
@@ -325,8 +563,10 @@ void YDBSettings::on_deleteButton_clicked() {
 /* 文件改名                                                                     */
 /************************************************************************/
 void YDBSettings::on_renameButton_clicked() {
-	if (NULL == item) return;
-	QString file_name = item->text();
+	//if (NULL == item) return;
+	//QString file_name = item->text();
+	if (NULL == tree_item) return;
+	QString file_name = tree_item->text(0);
 	YDBFileName fileNameDialog(this, file_name);
 	fileNameDialog.exec();
 }

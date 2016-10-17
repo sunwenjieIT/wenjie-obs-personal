@@ -1025,6 +1025,7 @@ static void *start_thread(void *data)
 
 static bool ffmpeg_output_start(void *data)
 {
+	blog(LOG_INFO, "ffmpeg_output_start method start");
 	struct ffmpeg_output *output = data;
 	int ret;
 

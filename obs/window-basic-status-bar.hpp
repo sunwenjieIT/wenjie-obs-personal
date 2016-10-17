@@ -26,6 +26,9 @@ private:
 
 	int retries = 0;
 	int totalSeconds = 0;
+	int old_totalSeconds = 0;
+
+	bool isPause = false;
 
 	int reconnectTimeout = 0;
 
@@ -45,7 +48,7 @@ private:
 
 	obs_output_t *GetOutput();
 
-	void Activate();
+	void Activate(bool isReset = false);
 	void Deactivate();
 
 	void UpdateDelayMsg();
@@ -69,9 +72,9 @@ public:
 	void StreamDelayStarting(int sec);
 	void StreamDelayStopping(int sec);
 	void StreamStarted(obs_output_t *output);
-	void StreamStopped();
-	void RecordingStarted(obs_output_t *output);
-	void RecordingStopped();
+	void StreamStopped(bool isPause);
+	void RecordingStarted(obs_output_t *output, bool isReset = false);
+	void RecordingStopped(bool isPause = false);
 
 	void ReconnectClear();
 };

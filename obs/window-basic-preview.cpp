@@ -331,11 +331,11 @@ static vec2 GetItemSize(obs_sceneitem_t *item)
 void OBSBasicPreview::GetStretchHandleData(const vec2 &pos)
 {
 	OBSBasic *main = reinterpret_cast<OBSBasic*>(App()->GetMainWindow());
-
+	
 	OBSScene scene = main->GetCurrentScene();
 	if (!scene)
 		return;
-
+	
 	HandleFindData data(pos, main->previewScale / main->devicePixelRatio());
 	obs_scene_enum_items(scene, FindHandleAtPos, &data);
 

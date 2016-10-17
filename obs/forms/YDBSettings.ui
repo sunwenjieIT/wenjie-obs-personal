@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>726</width>
-    <height>424</height>
+    <width>737</width>
+    <height>358</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,271 +17,388 @@
    <iconset>
     <normaloff>:/icon/images/YDB_icon.png</normaloff>:/icon/images/YDB_icon.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="spacing">
-        <number>0</number>
+      <widget class="QLabel" name="label_8">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(37, 177, 134);</string>
        </property>
-       <item>
-        <widget class="QPushButton" name="videoButton">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">padding:0</string>
-         </property>
-         <property name="text">
-          <string>我的视频</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListWidget" name="listWidget"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pathSettingsButton">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">margin:0</string>
-         </property>
-         <property name="text">
-          <string>文件保存设置</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="videoSettingsButton">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">margin:0</string>
-         </property>
-         <property name="text">
-          <string>录制设置</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="aboutButton">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">margin:0</string>
-         </property>
-         <property name="text">
-          <string>关于</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="helpButton">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">margin:0</string>
-         </property>
-         <property name="text">
-          <string>帮助</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="QFrame" name="frame">
+      <widget class="QLabel" name="label_7">
        <property name="minimumSize">
         <size>
-         <width>500</width>
-         <height>0</height>
+         <width>130</width>
+         <height>40</height>
         </size>
        </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>40</height>
+        </size>
        </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
+       <property name="styleSheet">
+        <string notr="true">image: url(:/ydb/images/YDB-logo.png);
+background-color: rgb(37, 177, 134);</string>
        </property>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="1" column="0">
-         <widget class="QGroupBox" name="groupBox">
-          <property name="title">
-           <string/>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="5">
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>文件大小：</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>码率：</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="8">
-            <widget class="QPushButton" name="renameButton">
-             <property name="minimumSize">
-              <size>
-               <width>48</width>
-               <height>48</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>48</width>
-               <height>48</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">border-image: url(:/res/images/YDB_rename.png);</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="7">
-            <widget class="QPushButton" name="deleteButton">
-             <property name="minimumSize">
-              <size>
-               <width>48</width>
-               <height>48</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>48</width>
-               <height>48</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">border-image: url(:/res/images/YDB_delete.png);</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="9">
-            <widget class="QPushButton" name="uploadButton">
-             <property name="minimumSize">
-              <size>
-               <width>48</width>
-               <height>48</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>48</width>
-               <height>48</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">border-image: url(:/res/images/YDB_upload.png);</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="QLabel" name="label_4">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>时长：</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="4">
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="6">
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="10">
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <spacer name="verticalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_9">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(37, 177, 134);</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTreeWidget" name="treeWidget">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(37, 177, 134);
+color: rgb(255, 255, 255);
+gridline-color: rgb(37, 177, 134);
+selection-color: rgb(0, 165, 119);</string>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+       <property name="uniformRowHeights">
+        <bool>false</bool>
+       </property>
+       <property name="itemsExpandable">
+        <bool>true</bool>
+       </property>
+       <property name="headerHidden">
+        <bool>true</bool>
+       </property>
+       <property name="columnCount">
+        <number>1</number>
+       </property>
+       <column>
+        <property name="text">
+         <string/>
+        </property>
+       </column>
+       <item>
+        <property name="text">
+         <string>我的视频</string>
+        </property>
+        <property name="icon">
+         <iconset resource="obs.qrc">
+          <normaloff>:/ydb/images/YDB-video.png</normaloff>:/ydb/images/YDB-video.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>文件保存设置</string>
+        </property>
+        <property name="icon">
+         <iconset resource="obs.qrc">
+          <normaloff>:/ydb/images/YDB-save-settings.png</normaloff>:/ydb/images/YDB-save-settings.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>录制设置</string>
+        </property>
+        <property name="icon">
+         <iconset resource="obs.qrc">
+          <normaloff>:/ydb/images/YDB-tape-set.png</normaloff>:/ydb/images/YDB-tape-set.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>关于</string>
+        </property>
+        <property name="icon">
+         <iconset resource="obs.qrc">
+          <normaloff>:/ydb/images/YDB-about.png</normaloff>:/ydb/images/YDB-about.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>帮助</string>
+        </property>
+        <property name="icon">
+         <iconset resource="obs.qrc">
+          <normaloff>:/ydb/images/YDB-help.png</normaloff>:/ydb/images/YDB-help.png</iconset>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QWidget" name="page_3">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QFrame" name="frame">
+         <property name="minimumSize">
+          <size>
+           <width>500</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="0">
+           <widget class="QGroupBox" name="groupBox">
+            <property name="title">
+             <string/>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <property name="spacing">
+                <number>10</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="text">
+                  <string>码率：</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="kbps_value">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_4">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>时长：</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="time_value">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_6">
+                 <property name="text">
+                  <string>文件大小：</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="size_value">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <spacer name="verticalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="deleteButton">
+                 <property name="minimumSize">
+                  <size>
+                   <width>22</width>
+                   <height>22</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>22</width>
+                   <height>22</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">border-image: url(:/ydb/images/YDB-delete.png);
+</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="maximumSize">
+                  <size>
+                   <width>40</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>删除</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="renameButton">
+                 <property name="minimumSize">
+                  <size>
+                   <width>22</width>
+                   <height>22</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>22</width>
+                   <height>22</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">border-image: url(:/ydb/images/YDB-rename.png);</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="maximumSize">
+                  <size>
+                   <width>40</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>重命名</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uploadButton">
+                 <property name="minimumSize">
+                  <size>
+                   <width>22</width>
+                   <height>22</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>22</width>
+                   <height>22</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">border-image: url(:/ydb/images/YDB-upload.png);</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="maximumSize">
+                  <size>
+                   <width>40</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>发送至</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_4"/>
+    </widget>
    </item>
   </layout>
  </widget>

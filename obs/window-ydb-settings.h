@@ -4,6 +4,7 @@
 #include <QDialog>
 #include "util/base.h"
 #include <QListWidgetItem>
+#include <QTreeWidget>
 #include "showimg.h"
 #include "window-ydb-filepath.h"
 #include "YDBUtil.h"
@@ -38,29 +39,34 @@ public:
 	QImage* img = new QImage;
 	QString file_path;
 	QString directory_path;
-	QListWidgetItem* item;
-	
+	//QListWidgetItem* item;
+	QTreeWidgetItem* tree_item;
 
 public:
 	bool hasItem();
 	
 public slots:
-	void on_listWidget_itemClicked(QListWidgetItem* item);
-	void on_videoButton_clicked();
-	void on_videoSettingsButton_clicked();
-	void on_aboutButton_clicked();
-	void on_helpButton_clicked();
-	void on_pathSettingsButton_clicked();
+	//void on_listWidget_itemClicked(QListWidgetItem* item);
+	//void on_videoButton_clicked();
+	//void on_videoSettingsButton_clicked();
+	//void on_aboutButton_clicked();
+	//void on_helpButton_clicked();
+	//void on_pathSettingsButton_clicked();
 	void on_deleteButton_clicked();
 	void on_renameButton_clicked();
 	void on_uploadButton_clicked();
 	void update_file_list();	//invokemethod调用
 	void update_file_name(QString file_name);	//invokemethod调用
-
+	void on_treeWidget_itemClicked(QTreeWidgetItem*, int);
+	void on_treeWidget_itemDoubleClicked(QTreeWidgetItem*, int);
 private:
+	QPointer<QThread> updateCheckThread;
     Ui::YDBSettings *ui;
 	OBSBasic* main;
 	OBSSource monitor_capture_source;
+	QTreeWidgetItem* my_videos;
+	void update_video_args(QString filepath);
+	bool check_filetype(QString file);
 };
 
 #endif // WINDOWYDBSETTINGS_H

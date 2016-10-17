@@ -161,6 +161,7 @@ static inline bool video_output_cur_frame(struct video_output *video)
 
 static void *video_thread(void *param)
 {
+	blog(LOG_INFO, "video thread start");
 	struct video_output *video = param;
 
 	os_set_thread_name("video-io: video thread");
@@ -184,6 +185,7 @@ static void *video_thread(void *param)
 		profile_reenable_thread();
 	}
 
+	blog(LOG_INFO, "video thread over");
 	return NULL;
 }
 

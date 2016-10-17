@@ -49,6 +49,8 @@ private:
 	int old_simpleOutputABitrate_idx = -1;
 	int old_displaySelect_idx = -1;
 
+	int old_simpleOutputVBitrate_value = -1;
+
 	QString old_simpleOutPreset;
 	QString old_simpleOutRecFormat;
 	QString old_sampleRate;
@@ -64,6 +66,7 @@ private:
 	bool simpleOutPreset_changed = false;
 	bool auxAudioDevice1_changed = false;
 	bool simpleOutputABitrate_changed = false;
+	bool simpleOutputVBitrate_changed = false;
 	bool captureCurosr_changed = false;
 	bool displaySelect_changed = false;
 
@@ -91,6 +94,7 @@ void SimpleRecordingEncoderChanged();
 void on_checkBox_toggled(bool visible);
 void on_displaySelect_currentIndexChanged(int idx);
 void on_buttonBox_clicked(QAbstractButton* button);
+void on_simpleOutputVBitrate_valueChanged(int value);
 };
 
 #endif // WINDOWYDBBASICSETTINGS_H
