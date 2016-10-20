@@ -48,7 +48,8 @@ void VolControl::OBSVolumeMuted(void *data, calldata_t *calldata)
 void VolControl::VolumeChanged()
 {
 	slider->blockSignals(true);
-	slider->setValue((int) (obs_fader_get_deflection(obs_fader) * 100.0f));
+	//slider->setValue((int)(obs_fader_get_deflection(obs_fader) * 100.0f));
+	slider->setValue((int)(obs_fader_get_deflection(obs_fader) * 150.0f));
 	slider->blockSignals(false);
 	
 	updateText();
@@ -129,7 +130,8 @@ VolControl::VolControl(OBSSource source_, bool showConfig, bool showDetail)
 	nameLabel->setFont(font);
 	volLabel->setFont(font);
 	slider->setMinimum(0);
-	slider->setMaximum(100);
+	slider->setMaximum(150);
+	//slider->setMaximum(100);
 
 //	slider->setMaximumHeight(13);
 
@@ -200,8 +202,11 @@ VolControl::VolControl(OBSSource source_, bool showConfig, bool showDetail)
 		volLabel->setVisible(false);
 		
 		//volMeter->setVisible(false);
-		volMeter->setMinimumWidth(70);
-		volMeter->setMaximumWidth(70);
+		//volMeter->setMinimumWidth(70);
+		//volMeter->setMaximumWidth(70);
+
+		volMeter->setMinimumWidth(150);
+		volMeter->setMaximumWidth(150);
 		QColor blackColor("black");
 		volMeter->setPeakHoldColor(blackColor);
 		//QColor color = volMeter->getBkColor();
@@ -269,14 +274,16 @@ VolumeMeter::VolumeMeter(QWidget *parent)
 	setMinimumSize(1, 3);
 
 	//Default meter color settings, they only show if there is no stylesheet, do not remove.
-	bkColor.setRgb(0xDD, 0xDD, 0xDD);
-	magColor.setRgb(0x20, 0x7D, 0x17);
-	peakColor.setRgb(0x3E, 0xF1, 0x2B);
+
 	//bkColor.setRgb(0xDD, 0xDD, 0xDD);
-	//magColor.setRgb(0x00, 0x00, 0x00);
-	//peakColor.setRgb(0x00, 0x00, 0x00);
+	//magColor.setRgb(0x20, 0x7D, 0x17);
+	//peakColor.setRgb(0x3E, 0xF1, 0x2B);
 	
-	peakHoldColor.setRgb(0x00, 0x00, 0x00);
+	bkColor.setRgb(0x70, 0xFE, 0xD6);	//背景颜色
+	magColor.setRgb(0xFF, 0xFF, 0xFF);	//中间部分
+	peakColor.setRgb(0xFF, 0xFF, 0xFF);	//顶部渐变部分
+	
+	peakHoldColor.setRgb(0xFF, 0x00, 0x00);
 	resetTimer = new QTimer(this);
 	connect(resetTimer, SIGNAL(timeout()), this, SLOT(resetState()));
 

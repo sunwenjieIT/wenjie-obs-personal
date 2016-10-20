@@ -9,11 +9,16 @@ ShowImg::ShowImg(QWidget *parent, QImage* image, QString local_path)
 	this->local_path = local_path;
 	//this->file_path = file_path;
 	ui.setupUi(this);
+
+
 	my_play_button = new QPushButton(this);//
 	/*my_play_button->setStyleSheet("QPushButton{border-image: url(:/qttest/play);}"
 		"QPushButton:hover{border-image: url(:/qttest/pause);}"
 		"QPushButton:pressed{border-image: url(:/qttest/stop);}");*/
-	my_play_button->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+
+	//my_play_button->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+	my_play_button->setCursor(QCursor(Qt::PointingHandCursor));
+	my_play_button->setStyleSheet("QPushButton{border-image: url(:/ydb/images/YDB/play.png);background:transparent;}QPushButton:hover{border-image:url(:/ydb/images/YDB/play-hover.png);background:transparent;}");
 	connect(my_play_button, SIGNAL(clicked()), this, SLOT(my_play_button_clicked()));
 }
 void ShowImg::my_play_button_clicked() {
@@ -37,6 +42,12 @@ void ShowImg::paintEvent(QPaintEvent*) {
 	painter.drawPixmap(0, 0, this->width(), this->height(), pix_image);
 	//qDebug() << "paint event";
 	//painter.drawPixmap(0, 0, pix_image.width(), pix_image.height(), pix_image);
+
+	painter.setPen(QColor(139, 139, 139));
+	painter.drawLine(0, 0, this->width() - 1, 0);
+	painter.drawLine(0, 0, 0, this->height() - 1);
+	painter.drawLine(this->width() - 1, 0, this->width() - 1, this->height() - 1);
+	painter.drawLine(0, this->height() - 1, this->width() - 1, this->height() - 1);
 }
 void ShowImg::update_image(QVariant qtest, QString local_path) {
 	

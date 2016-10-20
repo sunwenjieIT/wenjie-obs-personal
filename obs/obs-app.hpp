@@ -28,6 +28,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <QStyleFactory>
 
 #include "window-main.hpp"
 

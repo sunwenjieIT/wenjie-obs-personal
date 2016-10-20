@@ -168,7 +168,7 @@ void MyClass::run()
 			//string a;
 			QString a;
 			a.sprintf("init upload failed!error_code: %s error_msg: %s", s->error_code, s->error_msg);
-			blog(LOG_INFO, "Init multipart upload failed %s %s", s->error_code, s->error_msg);
+			blog(LOG_INFO, "Init multipart upload failed! error_code: %s, error_msg: %s", s->error_code, s->error_msg);
 			emit testSignal(4);//≥ı ºªØ ß∞‹
 			return;
 		}

@@ -109,6 +109,7 @@ class OBSBasic : public OBSMainWindow {
 	friend class OBSBasicSourceSelect;
 	friend class YDBBasicSettings;
 	friend class SimpleOutput;
+	friend class YDBSettings;
 	//friend class YDBFilePath;
 
 	enum class MoveDir {

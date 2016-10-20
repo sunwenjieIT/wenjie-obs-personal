@@ -1320,7 +1320,8 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 			return 0;
 
 		prof.Stop();
-		
+
+		//QApplication::setStyle(QStyleFactory::create("Fusion"));
 		return program.exec();
 
 	} catch (const char *error) {

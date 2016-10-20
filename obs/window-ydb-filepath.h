@@ -40,6 +40,8 @@ private:
 	QSettings *local_ini;
 	wchar_t path_utf16[MAX_PATH];
 	
+protected:
+	void paintEvent(QPaintEvent *event);
 };
 
 #endif // WINDOWYDBFILEPATH_H

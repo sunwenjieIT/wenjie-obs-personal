@@ -57,6 +57,7 @@
 #include <fstream>
 #include <sstream>
 
+#include <QDebug>
 #include <QScreen>
 #include <QWindow>
 
@@ -181,6 +182,24 @@ void OBSBasic::paintEvent(QPaintEvent* event) {
 	painter.drawLine(0, 0, 0, this->height() - 1);
 	painter.drawLine(this->width() - 1, 0, this->width() - 1, this->height() - 1);
 	painter.drawLine(0, this->height() - 1, this->width() - 1, this->height() - 1);
+
+	//QPainterPath path;
+	//path.setFillRule(Qt::WindingFill);
+	//path.addRect(10, 10, this->width() - 20, this->height() - 20);
+	//QPainter painter(this);
+	/*painter.setRenderHint(QPainter::Antialiasing, true);
+	painter.fillPath(path, QBrush(Qt::white));
+
+	QColor color(0, 0, 0, 50);
+	for (int i = 0; i < 10; i++)
+	{
+		QPainterPath path;
+		path.setFillRule(Qt::WindingFill);
+		path.addRect(10 - i, 10 - i, this->width() - (10 - i) * 2, this->height() - (10 - i) * 2);
+		color.setAlpha(150 - qSqrt(i) * 50);
+		painter.setPen(color);
+		painter.drawPath(path);
+	}*/
 }
 OBSBasic::OBSBasic(QWidget *parent)
 	: OBSMainWindow  (parent),
@@ -191,6 +210,8 @@ OBSBasic::OBSBasic(QWidget *parent)
 
 	//窗体去标题栏
 	this->setWindowFlags(Qt::FramelessWindowHint);
+
+	//this->setAttribute(Qt::WA_TranslucentBackground);
 
 	ui->setupUi(this);
 	/************************************************************************/
@@ -213,12 +234,14 @@ OBSBasic::OBSBasic(QWidget *parent)
 
 	
 	//窗体大小
-	this->setFixedSize(500, 25);
+	this->setFixedSize(290, 120);
+	//int test_width = this->width(); 64 71 32 35
 	
-	ui->horizontalWidget->setFixedSize(100, 25);
+	ui->horizontalWidget->setFixedSize(200, 25);
 
 	//播放按钮
-	ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+	//ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/ydb/images/YDB/start.png);}");
+
 	//ui->recordButton_view->setGeometry(20, 0, 20, 20);
 	//暂停按钮
 	//51, 204, 153 
@@ -4802,7 +4825,8 @@ void OBSBasic::on_recordButton_view_clicked() {
 	switch (recording_status){
 		case OBSBasic::Waiting:
 			//开始
-			ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/stop.png);}");
+			ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/ydb/images/YDB/Stop.png);}");
+			//border-image: url(:/ydb/images/YDB/start.png);
 			isReset = true;
 
 			totalSeconds = 0;
@@ -4818,7 +4842,7 @@ void OBSBasic::on_recordButton_view_clicked() {
 			delete refreshTimer;
 			ui->timeSession->setText(QString("00:00:00"));
 
-			ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+			ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/ydb/images/YDB/start.png);}");
 			this->repaint();
 			isPause = false;
 			ui->timeSession->setText("00:00:00");
@@ -4829,7 +4853,7 @@ void OBSBasic::on_recordButton_view_clicked() {
 		case OBSBasic::Recoding:
 			//结束并判断是否合并
 
-			ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/view/images/view/play.png);}");
+			ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/ydb/images/YDB/start.png);}");
 			isPause = false;
 			on_recordButton_clicked();
 			delete refreshTimer;
@@ -5032,8 +5056,9 @@ void OBSBasic::combineVideo(QString video1, QString video2) {
 	{
 		//文件IO还没结束. 
 		a++;
-		blog(LOG_INFO, "file io active %d", a);
-		
+		//QDebug() < "";
+		//blog(LOG_INFO, "file io active %d", a);
+		qDebug() << "file io active" << a;
 	}
 	if (!outputHandler->Active()) {
 
@@ -5214,6 +5239,7 @@ void OBSBasic::on_resumeButton_view_clicked() {
 				file_list.removeLast();
 			}
 			recording_status = Pausing;
+			ui->resumeButton_view->setStyleSheet("border-image:url(:/ydb/images/YDB/mini-play.png)");
 			break;
 		default:
 			break;

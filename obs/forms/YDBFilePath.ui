@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>207</height>
+    <width>457</width>
+    <height>492</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -50,6 +50,165 @@
    </property>
    <property name="text">
     <string>选择路径</string>
+   </property>
+  </widget>
+  <widget class="QTreeWidget" name="treeWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>120</y>
+     <width>256</width>
+     <height>331</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QTreeView::branch {
+    background: palette(base);
+}
+
+QTreeView::branch:has-siblings:!adjoins-item {
+    background: cyan;
+}
+
+QTreeView::branch:has-siblings:adjoins-item {
+    background: red;
+}
+
+QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+    background: blue;
+}
+
+QTreeView::branch:closed:has-children:has-siblings {
+    background: pink;
+}
+
+QTreeView::branch:has-children:!has-siblings:closed {
+    background: gray;
+}
+
+QTreeView::branch:open:has-children:has-siblings {
+    background: magenta;
+}
+
+QTreeView::branch:open:has-children:!has-siblings {
+    background: green;
+}
+QHeaderView{background:black;}</string>
+   </property>
+   <column>
+    <property name="text">
+     <string>1</string>
+    </property>
+   </column>
+   <item>
+    <property name="text">
+     <string>root</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>A</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>A1</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>新建子项目</string>
+      </property>
+     </item>
+    </item>
+    <item>
+     <property name="text">
+      <string>A2</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>新建子项目</string>
+      </property>
+     </item>
+    </item>
+    <item>
+     <property name="text">
+      <string>A3</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>新建子项目</string>
+      </property>
+     </item>
+    </item>
+   </item>
+   <item>
+    <property name="text">
+     <string>B</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>B1</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>B2</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>新建子项目</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>新建子项目</string>
+      </property>
+     </item>
+    </item>
+    <item>
+     <property name="text">
+      <string>B3</string>
+     </property>
+    </item>
+   </item>
+   <item>
+    <property name="text">
+     <string>C</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>D</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>D1</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>新建子项目</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>新建子项目</string>
+      </property>
+     </item>
+    </item>
+    <item>
+     <property name="text">
+      <string>新建子项目</string>
+     </property>
+    </item>
+   </item>
+  </widget>
+  <widget class="QTreeView" name="treeView">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>210</y>
+     <width>256</width>
+     <height>192</height>
+    </rect>
    </property>
   </widget>
  </widget>

@@ -18,6 +18,9 @@
     <file>images/obs.png</file>
     <file>images/YDB_close.png</file>
   </qresource>
+  <qresource prefix="/">
+    <file>../data/themes/ydb.qss</file>
+  </qresource>
   <qresource prefix="/view">
     <file>images/view/stop.png</file>
     <file>images/view/play.png</file>
@@ -34,16 +37,37 @@
     <file>images/settings/preferences-desktop-keyboard-shortcuts.png</file>
   </qresource>
   <qresource prefix="/ydb">
-    <file>images/YDB-about.png</file>
-    <file>images/YDB-close.png</file>
-    <file>images/YDB-help.png</file>
-    <file>images/YDB-logo.png</file>
-    <file>images/YDB-play.png</file>
-    <file>images/YDB-save-settings.png</file>
-    <file>images/YDB-tape-set.png</file>
-    <file>images/YDB-video.png</file>
-    <file>images/YDB-delete.png</file>
-    <file>images/YDB-rename.png</file>
-    <file>images/YDB-upload.png</file>
+    <file>images/YDB/vline-2.png</file>
+    <file>images/YDB/vline-white.png</file>
+    <file>images/YDB/vline.png</file>
+    <file>images/YDB/mini-close.png</file>
+    <file>images/YDB/mini-logo.png</file>
+    <file>images/YDB/mini-play.png</file>
+    <file>images/YDB/set-dropdown.png</file>
+    <file>images/YDB/start.png</file>
+    <file>images/YDB/vline-test.png</file>
+    <file>images/YDB/Stop.png</file>
+    <file>images/YDB/suspend.png</file>
+    <file>images/YDB/max-nor.png</file>
+    <file>images/YDB/mini-lucency.png</file>
+    <file>images/YDB/mini-white.png</file>
+    <file>images/YDB/about.png</file>
+    <file>images/YDB/close.png</file>
+    <file>images/YDB/delete.png</file>
+    <file>images/YDB/help.png</file>
+    <file>images/YDB/logo.png</file>
+    <file>images/YDB/max.png</file>
+    <file>images/YDB/mini.png</file>
+    <file>images/YDB/play.png</file>
+    <file>images/YDB/rename.png</file>
+    <file>images/YDB/save-settings.png</file>
+    <file>images/YDB/vline-mini.png</file>
+    <file>images/YDB/selected.png</file>
+    <file>images/YDB/tape-set.png</file>
+    <file>images/YDB/play-hover.png</file>
+    <file>images/YDB/triangle.png</file>
+    <file>images/YDB/back_green.png</file>
+    <file>images/YDB/upload.png</file>
+    <file>images/YDB/video.png</file>
   </qresource>
 </RCC>
