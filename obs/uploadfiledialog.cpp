@@ -28,6 +28,9 @@ UploadFileDialog::UploadFileDialog(QWidget *parent, QString file_path) :
     ui(new Ui::UploadFileDialog)
 {
     ui->setupUi(this);
+	ui->selectFileButton->setProperty("class", "normal");
+	ui->pushButton->setProperty("class", "normal");
+
 	defaultList.append(0);
 	defaultList.append(10001);
 	if (NULL != file_path) {
@@ -53,32 +56,38 @@ void UploadFileDialog::testSlot(int value) {
 	blog(LOG_INFO, "finish num:%d", value);
 	
 	if (value == 0) {
-		QMessageBox::information(NULL, "upload message", "upload success", QMessageBox::Yes, QMessageBox::Yes);
+		//成功
+		QMessageBox::information(NULL, QApplication::translate("OBSBasic", "Upload.Message", 0), QApplication::translate("OBSBasic", "Upload.Message.Success", 0), QMessageBox::Yes, QMessageBox::Yes);
 	}
 	else if (value == 1) {
-		QMessageBox::information(NULL, "upload message", "upload finish have more part,try again!", QMessageBox::Yes, QMessageBox::Yes);
+		//部分分块上传失败
+		QMessageBox::information(NULL, QApplication::translate("OBSBasic", "Upload.Message", 0), QApplication::translate("OBSBasic", "Upload.Message.PartialSuccess", 0), QMessageBox::Yes, QMessageBox::Yes);
 	}
 	else if (value == 2){
-		QMessageBox::information(NULL, "upload message", "completed error!", QMessageBox::Yes, QMessageBox::Yes);
+		//完成上传失败
+		QMessageBox::information(NULL, QApplication::translate("OBSBasic", "Upload.Message", 0), QApplication::translate("OBSBasic", "Upload.Message.Completed.Error", 0), QMessageBox::Yes, QMessageBox::Yes);
 	}
 	else if(value == 4){
-		QMessageBox::information(NULL, "upload message", "oss init error!", QMessageBox::Yes, QMessageBox::Yes);
+		//初始化失败
+		QMessageBox::information(NULL, QApplication::translate("OBSBasic", "Upload.Message", 0), QApplication::translate("OBSBasic", "Upload.Message.Init.Error", 0), QMessageBox::Yes, QMessageBox::Yes);
 
 	}
-	else if (value == 5) {
-		QMessageBox::information(NULL, "upload message", "network error!", QMessageBox::Yes, QMessageBox::Yes);
+	else if (value == 5){
+		//网络异常
+		QMessageBox::information(NULL, QApplication::translate("OBSBasic", "Upload.Message", 0), QApplication::translate("OBSBasic", "Upload.Message.Network.Error", 0), QMessageBox::Yes, QMessageBox::Yes);
 
 	}
 	else if (value == 6) {
-		QMessageBox::information(NULL, "upload message", "file error!", QMessageBox::Yes, QMessageBox::Yes);
+		//文件不存在
+		QMessageBox::information(NULL, QApplication::translate("OBSBasic", "Upload.Message", 0), QApplication::translate("OBSBasic", "Upload.Message.File.Error", 0), QMessageBox::Yes, QMessageBox::Yes);
 
 	}
-	ui->pushButton->setText("start upload");
+	ui->pushButton->setText(QApplication::translate("OBSBasic", "Upload.PushButton.Start", 0));
 }
 
 void UploadFileDialog::taskFinished() {
 	is_alive = false;
-	ui->pushButton->setText("start upload");
+	ui->pushButton->setText(QApplication::translate("OBSBasic", "Upload.PushButton.Start", 0));
 	//os_http_io_deinitialize();
 	//mq->putMessage(-1);
 }
@@ -98,7 +107,7 @@ void UploadFileDialog::on_pushButton_clicked(){
 }
 void UploadFileDialog::taskStarted() {
 	is_alive = true;
-	ui->pushButton->setText("uploading...");
+	ui->pushButton->setText(QApplication::translate("OBSBasic", "Upload.PushButton.Uploading", 0));
 	//disconnect(ui->pushButton, SIGNAL(clicked()), this, SLOT());
 	//ui->pushButton->dis
 }

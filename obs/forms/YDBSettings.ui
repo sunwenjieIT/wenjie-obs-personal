@@ -468,7 +468,7 @@ background-color: rgb(255, 255, 255);</string>
         <enum>QFrame::Plain</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="page_3">
         <layout class="QGridLayout" name="gridLayout_2">
@@ -1179,30 +1179,6 @@ background-color: rgb(255, 255, 255);</string>
                 </item>
                </widget>
               </item>
-              <item row="4" column="1">
-               <widget class="QSpinBox" name="simpleOutputVBitrate">
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>9</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">color: rgb(0, 0, 0);</string>
-                </property>
-                <property name="minimum">
-                 <number>200</number>
-                </property>
-                <property name="maximum">
-                 <number>1000000</number>
-                </property>
-               </widget>
-              </item>
               <item row="2" column="1">
                <widget class="QComboBox" name="simpleOutStrEncoder">
                 <property name="maximumSize">
@@ -1314,6 +1290,30 @@ background-color: rgb(255, 255, 255);</string>
                 <property name="text">
                  <string>录制光标</string>
                 </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QComboBox" name="simpleOutputVBitrate">
+                <property name="font">
+                 <font>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>500(标清)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>750(高清)</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>1000(超清)</string>
+                 </property>
+                </item>
                </widget>
               </item>
              </layout>
@@ -1626,8 +1626,8 @@ background-color: rgb(255, 255, 255);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>480</width>
-                <height>183</height>
+                <width>224</width>
+                <height>72</height>
                </rect>
               </property>
               <property name="styleSheet">
@@ -1737,8 +1737,8 @@ background-color: rgb(255, 255, 255);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>480</width>
-                <height>183</height>
+                <width>98</width>
+                <height>28</height>
                </rect>
               </property>
              </widget>

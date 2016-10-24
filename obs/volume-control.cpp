@@ -208,7 +208,8 @@ VolControl::VolControl(OBSSource source_, bool showConfig, bool showDetail)
 		volMeter->setMinimumWidth(150);
 		volMeter->setMaximumWidth(150);
 		QColor blackColor("black");
-		volMeter->setPeakHoldColor(blackColor);
+
+		
 		//QColor color = volMeter->getBkColor();
 		//QColor testColor;
 	}
@@ -324,15 +325,21 @@ void VolumeMeter::paintEvent(QPaintEvent *event)
 	int scaledPeak     = int((float)width * peak);
 	int scaledPeakHold = int((float)width * peakHold);
 
+	QColor my_bkcolor(112, 255, 212);
+	QColor my_peakcolor("white");
+	QColor my_peakholdcolor(250,250,250);
+
 	gradient.setStart(qreal(scaledMag), 0);
 	gradient.setFinalStop(qreal(scaledPeak), 0);
-	gradient.setColorAt(0, magColor);
-	gradient.setColorAt(1, peakColor);
+	gradient.setColorAt(0, my_peakcolor);
+	gradient.setColorAt(1, my_peakholdcolor);
+
 
 	// RMS
 	painter.fillRect(0, 0, 
 			scaledMag, height,
-			magColor);
+			my_peakcolor);
+	//magColor);
 
 	// RMS - Peak gradient
 	painter.fillRect(scaledMag, 0,
@@ -342,7 +349,7 @@ void VolumeMeter::paintEvent(QPaintEvent *event)
 	// Background
 	painter.fillRect(scaledPeak, 0,
 			width - scaledPeak, height,
-			bkColor);
+			my_bkcolor);
 
 	// Peak hold
 	if (peakHold == 1.0f)

@@ -4843,6 +4843,7 @@ void OBSBasic::on_recordButton_view_clicked() {
 			ui->timeSession->setText(QString("00:00:00"));
 
 			ui->recordButton_view->setStyleSheet("QPushButton{border-image: url(:/ydb/images/YDB/start.png);}");
+			ui->resumeButton_view->setStyleSheet("border-image: url(:/ydb/images/YDB/suspend.png);");
 			this->repaint();
 			isPause = false;
 			ui->timeSession->setText("00:00:00");
@@ -5218,6 +5219,7 @@ void OBSBasic::on_resumeButton_view_clicked() {
 			isReset = false;
 			on_recordButton_clicked();
 			refreshTimer->start(1000);
+			ui->resumeButton_view->setStyleSheet("border-image: url(:/ydb/images/YDB/suspend.png);");
 			break;
 		case OBSBasic::Recoding:
 			//ÔÝÍ£

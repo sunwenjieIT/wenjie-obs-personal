@@ -16,6 +16,7 @@
 #include <QStandardItem>
 #include <QImage>
 #include <QImageReader>
+#include <QTextCodec>
 
 #include "showimg.h"
 #include "window-ydb-filepath.h"
@@ -111,8 +112,8 @@ private:
 	int old_auxAudioDevice1_idx = -1;
 	int old_simpleOutputABitrate_idx = -1;
 	int old_displaySelect_idx = -1;
+	int old_simpleOutputVBitrate_idx = -1;
 
-	int old_simpleOutputVBitrate_value = -1;
 
 	QString old_filePathEdit;
 
@@ -170,7 +171,7 @@ private slots:
 	void on_displaySelect_currentIndexChanged(int idx);
 	void on_resetButton_clicked();
 	void on_selectPathButton_clicked();
-	void on_simpleOutputVBitrate_valueChanged(int value);
+	void on_simpleOutputVBitrate_currentIndexChanged(int idx);
 	
 	//文件保存设置相关槽
 	void on_changeFilePathYes_clicked();

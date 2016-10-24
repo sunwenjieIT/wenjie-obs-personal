@@ -157,8 +157,26 @@ YDBSettings::YDBSettings(QWidget *parent, OBSSource monitor_capture_source) :
 	//视频比特率
 	int videoBitrate = config_get_uint(main->Config(), "SimpleOutput",
 		"VBitrate");
-	ui->simpleOutputVBitrate->setValue(videoBitrate);
-	old_simpleOutputVBitrate_value = videoBitrate;
+	/*char videoBitrate_char[10];
+	itoa(videoBitrate, videoBitrate_char, 10);*/
+	//ui->simpleout
+	switch (videoBitrate){
+	case 500:
+		ui->simpleOutputVBitrate->setCurrentIndex(0);
+		break;
+	case 750:
+		ui->simpleOutputVBitrate->setCurrentIndex(1);
+		break;
+	case 1000:
+		ui->simpleOutputVBitrate->setCurrentIndex(2);
+		break;
+	default:
+		break;
+	}
+	//SetComboByName(ui->simpleOutputVBitrate, videoBitrate_char);
+
+	//ui->simpleOutputVBitrate->setValue(videoBitrate);
+	old_simpleOutputVBitrate_idx = ui->simpleOutputVBitrate->currentIndex();
 	//录制光标(全屏录制)
 	is_capture_cursor = obs_data_get_bool(monitor_capture_settings, "capture_cursor");
 	ui->checkBox->setChecked(is_capture_cursor);
@@ -904,6 +922,7 @@ void YDBSettings::on_renameButton_clicked() {
 	fileNameDialog.exec();
 }
 void YDBSettings::on_uploadButton_clicked() {
+	//QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 	UploadFileDialog uploadDialog(this, file_path);
 	uploadDialog.exec();
 }
@@ -1156,10 +1175,10 @@ void YDBSettings::SimpleStreamingEncoderChanged() {
 /************************************************************************/
 /* 编码器预设                                                                     */
 /************************************************************************/
-void YDBSettings::on_simpleOutputVBitrate_valueChanged(int value) {
-	if (is_init_done && value != old_simpleOutputVBitrate_value) {
+void YDBSettings::on_simpleOutputVBitrate_currentIndexChanged(int idx) {
+	if (is_init_done && idx != old_simpleOutputVBitrate_idx) {
 		sender()->setProperty("changed", QVariant(true));
-		simpleOutPreset_changed = true;
+		simpleOutputVBitrate_changed = true;
 
 	}
 }
@@ -1404,7 +1423,8 @@ void YDBSettings::on_resetButton_clicked() {
 	ui->auxAudioDevice1->setCurrentIndex(1);
 	ui->sampleRate->setCurrentIndex(0);
 	ui->checkBox->setChecked(true);
-	ui->simpleOutputVBitrate->setValue(500);
+	
+	ui->simpleOutputVBitrate->setCurrentIndex(0);
 }
 /************************************************************************/
 /* 选择路径                                                                     */
@@ -1679,8 +1699,22 @@ YDBSettings::~YDBSettings()
 	if (auxAudioDevice1_changed) {
 		main->ResetAudioDevice(App()->InputAudioSource(), QT_TO_UTF8(GetComboData(ui->auxAudioDevice1)), Str("Basic.AuxDevice1"), 3);
 	}
-	if (simpleOutPreset_changed) {
-		config_set_int(main->Config(), "SimpleOutput", "VBitrate", ui->simpleOutputVBitrate->value());
+	if (simpleOutputVBitrate_changed) {
+		QString va = ui->simpleOutputVBitrate->currentText();
+		int vb_value = 500;
+		switch (ui->simpleOutputVBitrate->currentIndex()){
+		case 0:
+			vb_value = 500;
+			break;
+		case 1:
+			vb_value = 750;
+			break;
+		case 2:
+			vb_value = 1000;
+			break;
+		}
+		config_set_int(main->Config(), "SimpleOutput", "VBitrate", vb_value);
+		//config_set_int(main->Config(), "SimpleOutput", "VBitrate", ui->simpleOutputVBitrate->currentText().toInt());
 	}
 	//应用改动
 	if (fpsCommon_changed || displaySelect_changed)
@@ -1689,7 +1723,7 @@ YDBSettings::~YDBSettings()
 		obs_source_update(monitor_capture_source, monitor_capture_settings);
 	}
 	if (simpleOutRecFormat_changed || simpleOutputABitrate_changed || simpleOutPreset_changed
-		|| simpleOutStrEncoder_changed) {
+		|| simpleOutStrEncoder_changed || simpleOutputVBitrate_changed) {
 		main->ResetOutputs();
 	}
 

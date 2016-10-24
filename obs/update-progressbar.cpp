@@ -37,7 +37,16 @@ char* getLocal8BitChar(QString &str)
 	strcpy(ret, data);
 	return ret;
 }
-
+char* getLatin1Char(QString &str)
+{
+	QByteArray temp_ba;
+	temp_ba = str.toLatin1();
+	//temp_ba.da
+	char* data = temp_ba.data();
+	char* ret = new char[strlen(data) + 1];
+	strcpy(ret, data);
+	return ret;
+}
 char* getChar(QString& str)
 {
 	QByteArray temp_ba;
@@ -126,11 +135,17 @@ void MyClass::run()
 	aos_list_t complete_part_list;
 	oss_list_part_content_t *part_content = NULL;
 	oss_complete_part_content_t *complete_part_content = NULL;
+	char *key = NULL;
 	int is_cname = 0;
 	int rc;
 
-	aos_str_set(&bucket, "wenjie-backet");
-	aos_str_set(&object, file_name_char);
+	key = (char*)malloc(strlen(DIR_NAME) + strlen(file_name_char) + 1);
+	strcpy(key, DIR_NAME);
+	strcat(key, file_name_char);
+
+	aos_str_set(&bucket, BUCKET_NAME);
+	aos_str_set(&object, key);
+	//aos_str_set(&object, file_name_char);
 	aos_pool_create(&p, NULL);
 	/* 创建并初始化options */
 	options = oss_request_options_create(p);
@@ -206,7 +221,9 @@ void MyClass::run()
 		/* 用qthread重构                                                                     */
 		/************************************************************************/
 		upload_threads[i] = new UploadTask(this, i, successKey, partListKey, upload_id.data,
-			file_path_char, file_name_char, start_part, end_length, lists[i], mq);
+			file_path_char, key, start_part, end_length, lists[i], mq);
+		/*	upload_threads[i] = new UploadTask(this, i, successKey, partListKey, upload_id.data,
+				file_path_char, file_name_char, start_part, end_length, lists[i], mq);*/
 		connect(upload_threads[i], SIGNAL(finished()), upload_threads[i], SLOT(deleteLater()), Qt::QueuedConnection);
 		upload_threads[i]->start();
 		blog(LOG_INFO, "upload thread %d start", i);
@@ -358,10 +375,24 @@ bool MyClass::check_upload_file()
 	QFileInfo fi;
 	fi = QFileInfo(file_path);
 	file_name = fi.fileName();
+	QFile qfile(file_path);
+	qint64 q_total_size = qfile.size();
+
 	file_name_char = getLocal8BitChar(file_name);
+
+	//std::string test_str = file_name.toStdString();
+	//const char* aaaa = test_str.c_str();
+
+	file_name_char = getLatin1Char(file_name);
+	//file_name_char = getChar(file_name);
+
 	file_root_path = fi.absolutePath();
-	total_size = get_file_size(file_path_char);
+
+	total_size = q_total_size;
+
+	//total_size = get_file_size(file_path_char);
 	return total_size != -1;
+	//return total_size != -1;
 }
 /************************************************************************/
 /* 初始化本地信息                                                                       */
